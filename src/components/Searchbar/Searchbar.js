@@ -1,11 +1,5 @@
 import React from "react";
-import {
-    makeStyles,
-    Paper,
-    InputBase,
-    IconButton,
-    Divider,
-} from "@material-ui/core";
+import { makeStyles, Paper, InputBase, IconButton, Divider } from "@material-ui/core";
 import TuneIcon from "@material-ui/icons/Tune";
 import SearchIcon from "@material-ui/icons/Search";
 
@@ -41,6 +35,13 @@ const Searchbar = (props) => {
                 placeholder="Search for Videos"
                 inputProps={{ "aria-label": "search for videos" }}
                 className={styles.input}
+                value={props.searchValue}
+                onChange={(e) => props.searchValueChanged(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        props.searchClicked();
+                    }
+                }}
             />
             <div className={styles.box}>
                 <IconButton>
@@ -49,7 +50,7 @@ const Searchbar = (props) => {
             </div>
             <Divider className={styles.divider} orientation="vertical" />
             <div className={styles.box}>
-                <IconButton>
+                <IconButton onClick={props.searchClicked}>
                     <SearchIcon />
                 </IconButton>
             </div>

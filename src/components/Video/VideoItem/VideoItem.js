@@ -25,24 +25,23 @@ const useStyles = makeStyles((theme) => ({
 
 const VideoItem = (props) => {
     const styles = useStyles();
-
-    const { videoUrl } = props;
+    const { videoId, title } = props;
 
     return (
         <Card className={styles.root}>
             <div className={styles.videobox}>
                 <iframe
-                    title="title-1"
+                    title={title}
                     width="100%"
                     height="100%"
-                    src={videoUrl}
+                    src={"https://www.youtube.com/embed/" + videoId}
                     frameBorder="0"
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                ></iframe>
+                />
             </div>
             <Divider />
             <CardContent className={styles.videotitle}>
-                <Typography variant="h6">Video Title</Typography>
+                <Typography variant="h6" noWrap>{title}</Typography>
             </CardContent>
             <Divider />
             <CardActions className={styles.buttons}>

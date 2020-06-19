@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Login = (props) => {
-    const classes = useStyles();
+    const styles = useStyles();
 
     // useState
     const [authState, setAuthState] = useState("login");
@@ -85,18 +85,18 @@ const Login = (props) => {
     };
 
     return (
-        <div className={classes.page}>
-            <div className={classes.content}>
+        <div className={styles.page}>
+            <div className={styles.content}>
                 <Grid container>
                     <Grid item xs={3} md={4}></Grid>
                     <Grid item xs={6} md={4}>
                         <Paper>
-                            <figure className={classes.form}>
-                                <Typography variant="h4" className={classes.title}>
+                            <figure className={styles.form}>
+                                <Typography variant="h4" className={styles.title}>
                                     {authState === "login" ? "Sign in" : "Sign up"}
                                 </Typography>
                                 <TextField
-                                    className={classNames(classes.controls, classes.input)}
+                                    className={classNames(styles.controls, styles.input)}
                                     color="secondary"
                                     variant="outlined"
                                     type="email"
@@ -106,7 +106,7 @@ const Login = (props) => {
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                                 <TextField
-                                    className={classNames(classes.controls, classes.input)}
+                                    className={classNames(styles.controls, styles.input)}
                                     color="secondary"
                                     variant="outlined"
                                     type="password"
@@ -114,9 +114,7 @@ const Login = (props) => {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
-                                <div
-                                    className={classNames(classes.buttonBox, classes.controls, classes.root)}
-                                >
+                                <div className={classNames(styles.buttonBox, styles.controls, styles.root)}>
                                     <Button variant="contained" color="secondary" onClick={toggleAuthState}>
                                         {authState === "login" ? "Register" : "Login"}
                                     </Button>

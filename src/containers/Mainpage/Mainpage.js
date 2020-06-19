@@ -9,13 +9,14 @@ import image from "../../images/homepage-bg-2.jpg";
 
 const useStyles = makeStyles({
     page: {
-        minhHeight: "100vh",
+        height: "calc(100% - 64px)",
+        minHeight: "calc(100% - 64px)",
         backgroundImage: `url(${image})`,
         backgroundPosition: "center",
         backgroundSize: "cover",
     },
     content: {
-        height: "calc(100% - 64px)",
+        height: "100%",
     },
 });
 

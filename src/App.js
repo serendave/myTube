@@ -14,15 +14,15 @@ const App = () => {
     const dispatch = useDispatch();
 
     const isAuthenticated = useSelector((state) => state.auth.token !== null);
-    const onTryAutoLogin = useCallback(() => dispatch(action.authCheckState()));
+    const onTryAutoLogin = useCallback(() => dispatch(action.authCheckState()), [dispatch]);
 
     useEffect(() => {
-        console.log("Hello");
         onTryAutoLogin();
     }, [onTryAutoLogin]);
 
     let routes = (
         <Switch>
+            {/* <Redirect to="/login" /> */}
             <Route path="/login" component={Loginpage} />
         </Switch>
     );
