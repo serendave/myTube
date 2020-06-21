@@ -21,10 +21,12 @@ const App = () => {
     }, [onTryAutoLogin]);
 
     let routes = (
-        <Switch>
-            {/* <Redirect to="/login" /> */}
-            <Route path="/login" component={Loginpage} />
-        </Switch>
+        <Fragment>
+            <Redirect to="/login" />
+            <Switch>
+                <Route path="/login" component={Loginpage} />
+            </Switch>
+        </Fragment>
     );
 
     if (isAuthenticated) {

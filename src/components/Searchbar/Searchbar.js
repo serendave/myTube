@@ -1,7 +1,9 @@
 import React from "react";
 import { makeStyles, Paper, InputBase, IconButton, Divider } from "@material-ui/core";
-import TuneIcon from "@material-ui/icons/Tune";
 import SearchIcon from "@material-ui/icons/Search";
+import ClearIcon from "@material-ui/icons/Clear";
+import Filter from "../Filter/Filter";
+import classnames from "classnames";
 
 const useStyles = makeStyles({
     root: {
@@ -16,6 +18,9 @@ const useStyles = makeStyles({
         backgroundColor: "#384f66",
         borderTopLeftRadius: 30,
         borderBottomLeftRadius: 30,
+    },
+    clearIcon: {
+        backgroundColor: "#384f66"
     },
     box: {
         padding: 5,
@@ -43,10 +48,13 @@ const Searchbar = (props) => {
                     }
                 }}
             />
-            <div className={styles.box}>
-                <IconButton>
-                    <TuneIcon />
+            <div className={classnames(styles.box, styles.clearIcon)}>
+                <IconButton onClick={props.searchCleared}>
+                    <ClearIcon />
                 </IconButton>
+            </div>
+            <div className={styles.box}>
+                <Filter orderChanged={() => {}} durationChanged={() => {}} qualityChanged={() => {}} />
             </div>
             <Divider className={styles.divider} orientation="vertical" />
             <div className={styles.box}>

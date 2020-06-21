@@ -8,12 +8,29 @@ import videosUrl from "../../config/videosAPI/videosAPI";
 const Home = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [videos, setVideos] = useState([]);
+    const [videosLoading, setVideosLoading] = useState(false);
 
     useEffect(() => {
         console.log(videos);
     }, [videos]);
 
+    const clearSearchQuery = () => {
+        setSearchQuery("");
+    }
+
+    const startSearch = () => {
+        setVideosLoading(true);
+        setVideos([]);
+    };
+
+    const finishSearch = (videos) => {
+        setVideos(videos);
+        setVideosLoading(false);
+    };
+
     const searchVideosHandler = () => {
+        startSearch();
+
         axios.get(videosUrl, {
                 params: {
                     q: searchQuery,
@@ -31,7 +48,7 @@ const Home = () => {
                     });
                 });
 
-                setVideos(formattedVideos);
+                finishSearch(formattedVideos);
             })
             .catch((error) => {
                 console.log(error);
@@ -44,8 +61,9 @@ const Home = () => {
                 searchValue={searchQuery}
                 searchValueChanged={setSearchQuery}
                 searchClicked={searchVideosHandler}
+                searchCleared={clearSearchQuery}
             />
-            <VideoContainer videos={videos} />
+            <VideoContainer videos={videos} loading={videosLoading} />
         </div>
     );
 };

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Paper, makeStyles, Typography } from "@material-ui/core";
 import VideoItem from "../VideoItem/VideoItem";
+import Spinner from "../../UI/Spinner/Spinner";
 
 const useStyles = makeStyles({
     root: {
@@ -10,19 +11,19 @@ const useStyles = makeStyles({
         gridGap: 15,
         backgroundColor: "#384f66",
         minHeight: 350,
-        position: "relative"
+        position: "relative",
     },
     message: {
         position: "absolute",
         top: "50%",
         left: "50%",
-        transform: "translate(-50%, -50%)"
-    }
+        transform: "translate(-50%, -50%)",
+    },
 });
 
 const VideoContainer = (props) => {
     const styles = useStyles();
-    const { videos } = props;
+    const { videos, loading } = props;
 
     let content = (
         <Typography variant="h5" align="center" className={styles.message}>
@@ -30,20 +31,17 @@ const VideoContainer = (props) => {
         </Typography>
     );
 
+    if (loading) {
+        content = <Spinner color="secondary" size="100px" centered="true" />;
+    }
+
     if (videos.length > 0) {
         content = (
-            <React.Fragment>
-                {videos.map(video => { 
-                    return (
-                        <VideoItem 
-                            videoId={video.id} 
-                            title={video.title} 
-                            key={video.id} 
-                        />
-                    ); 
+            <Fragment>
+                {videos.map((video) => {
+                    return <VideoItem videoId={video.id} title={video.title} key={video.id} />;
                 })}
-                {/* <VideoItem videoId="https://www.youtube.com/embed/WV6u_6ZNWkQ" /> */}
-            </React.Fragment>
+            </Fragment>
         );
     }
 
