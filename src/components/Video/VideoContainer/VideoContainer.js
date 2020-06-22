@@ -42,7 +42,7 @@ const VideoContainer = (props) => {
                     return <VideoItem videoId={video.id} title={video.title} key={video.id} />;
                 })}
             </Fragment>
-        );
+        ); 
     }
 
     return <Paper className={styles.root}>{content}</Paper>;

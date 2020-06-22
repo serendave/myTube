@@ -1,10 +1,16 @@
 import React from "react";
+
+// Material UI
 import { Card, CardContent, Typography, Divider, CardActions, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import AddIcon from "@material-ui/icons/Add";
 import FullscreenIcon from "@material-ui/icons/Fullscreen";
+
+// Redux
+import * as actions from "../../../store/actions/actionCreators/videos";
+import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,11 +27,63 @@ const useStyles = makeStyles((theme) => ({
     buttons: {
         justifyContent: "flex-end",
     },
+    favoriteIcon: {
+        fill: "#ffc107",
+    },
+    likedIcon: {
+        fill: "#f50057",
+    },
 }));
 
-const VideoItem = (props) => {
+const VideoItem = React.memo((props) => {
     const styles = useStyles();
     const { videoId, title } = props;
+
+    const isVideoFavorite = useSelector((state) => isVideoPresent(state.videos.favorites, videoId));
+    const isVideoLiked = useSelector((state) => isVideoPresent(state.videos.liked, videoId));
+
+    function isVideoPresent(collection, videoId) {
+        for (let id in collection) {
+            if (id === videoId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    const dispatch = useDispatch();
+    const onFavoritesAdd = () => dispatch(actions.favoritesAdd(videoId, title));
+    const onFavoritesRemove = () => dispatch(actions.favoritesRemove(videoId));
+    const onLikedAdd = () => dispatch(actions.likedAdd(videoId, title));
+    const onLikedRemove = () => dispatch(actions.likedRemove(videoId));
+
+    let favoriteButton = (
+        <IconButton size="small" onClick={onFavoritesAdd}>
+            <FavoriteIcon />
+        </IconButton>
+    );
+
+    let likedButton = (
+        <IconButton size="small" onClick={onLikedAdd}>
+            <ThumbUpIcon />
+        </IconButton>
+    );
+    
+    if (isVideoFavorite) {
+        favoriteButton = (
+            <IconButton size="small" onClick={onFavoritesRemove}>
+                <FavoriteIcon  className={styles.favoriteIcon} />
+            </IconButton>
+        );
+    }
+
+    if (isVideoLiked) {
+        likedButton = (
+            <IconButton size="small" onClick={onLikedRemove}>
+                <ThumbUpIcon  className={styles.likedIcon} />
+            </IconButton>
+        );
+    }
 
     return (
         <Card className={styles.root}>
@@ -41,16 +99,14 @@ const VideoItem = (props) => {
             </div>
             <Divider />
             <CardContent className={styles.videotitle}>
-                <Typography variant="h6" noWrap>{title}</Typography>
+                <Typography variant="h6" noWrap>
+                    {title}
+                </Typography>
             </CardContent>
             <Divider />
             <CardActions className={styles.buttons}>
-                <IconButton size="small">
-                    <ThumbUpIcon />
-                </IconButton>
-                <IconButton size="small">
-                    <FavoriteIcon />
-                </IconButton>
+                {likedButton}
+                {favoriteButton}
                 <IconButton size="small">
                     <AddIcon />
                 </IconButton>
@@ -60,6 +116,6 @@ const VideoItem = (props) => {
             </CardActions>
         </Card>
     );
-};
+});
 
 export default VideoItem;

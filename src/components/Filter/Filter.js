@@ -78,7 +78,11 @@ const Filter = (props) => {
                         <Typography variant="h6" gutterBottom>
                             Order
                         </Typography>
-                        <Select value={props.order} onChange={orderChanged} color="secondary">
+                        <Select
+                            value={props.order}
+                            onChange={(e) => orderChanged(e.target.value)}
+                            color="secondary"
+                        >
                             <MenuItem value="date">Date</MenuItem>
                             <MenuItem value="rating">Rating</MenuItem>
                             <MenuItem value="relevance">Relevance</MenuItem>
@@ -90,7 +94,11 @@ const Filter = (props) => {
                         <Typography variant="h6" gutterBottom>
                             Duration
                         </Typography>
-                        <RadioGroup aria-label="duration" value={props.duration} onChange={durationChanged}>
+                        <RadioGroup
+                            aria-label="duration"
+                            value={props.duration}
+                            onChange={(e) => durationChanged(e.target.value)}
+                        >
                             <FormControlLabel value="any" control={<Radio size="small" />} label="Any" />
                             <FormControlLabel value="short" control={<Radio size="small" />} label="Short" />
                             <FormControlLabel
@@ -105,10 +113,14 @@ const Filter = (props) => {
                         <Typography variant="h6" gutterBottom>
                             Quality
                         </Typography>
-                        <RadioGroup aria-label="quality" value={props.quality} onChange={qualityChanged}>
+                        <RadioGroup
+                            aria-label="quality"
+                            value={props.quality}
+                            onChange={(e) => qualityChanged(e.target.value)}
+                        >
                             <FormControlLabel value="any" control={<Radio size="small" />} label="Any" />
-                            <FormControlLabel value="sd" control={<Radio size="small" />} label="SD" />
-                            <FormControlLabel value="hd" control={<Radio size="small" />} label="HD" />
+                            <FormControlLabel value="standard" control={<Radio size="small" />} label="SD" />
+                            <FormControlLabel value="high" control={<Radio size="small" />} label="HD" />
                         </RadioGroup>
                     </FormControl>
                 </div>

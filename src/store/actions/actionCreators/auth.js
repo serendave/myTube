@@ -40,7 +40,6 @@ export const authenticate = (email, password, isSignedUp) => {
             };
 
             const response = await axios.post(url, authData);
-            console.log(response);
 
             const token = response.data.idToken;
             const userId = response.data.localId;

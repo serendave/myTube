@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 
 // Reducers
 import authReducer from "./store/reducers/auth";
+import videosReducer from "./store/reducers/videos";
 
 // Middleware
 import thunk from "redux-thunk";
@@ -26,6 +27,7 @@ const composeEnhancers =
 // Combine two reducers into one
 const rootReducer = combineReducers({
     auth: authReducer,
+    videos: videosReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));

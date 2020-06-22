@@ -1,3 +1,5 @@
+import * as actions from '../actions/actions';
+
 const initialState = {
     token: null,
     userId: null,
@@ -8,13 +10,13 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case "AUTH_START":
+        case actions.AUTH_START:
             return {
                 ...state,
                 error: null,
                 loading: true,
             };
-        case "AUTH_SUCCESS":
+        case actions.AUTH_SUCCESS:
             return {
                 ...state,
                 token: action.token,
@@ -23,13 +25,13 @@ const reducer = (state = initialState, action) => {
                 error: null,
                 loading: false,
             };
-        case "AUTH_FAIL":
+        case actions.AUTH_FAIL:
             return {
                 ...state,
                 error: true,
                 loading: false,
             };
-        case "AUTH_LOGOUT": {
+        case actions.AUTH_LOGOUT: {
             return {
                 ...state,
                 token: null,

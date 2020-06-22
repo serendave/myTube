@@ -20,7 +20,7 @@ const useStyles = makeStyles({
         borderBottomLeftRadius: 30,
     },
     clearIcon: {
-        backgroundColor: "#384f66"
+        backgroundColor: "#384f66",
     },
     box: {
         padding: 5,
@@ -31,7 +31,7 @@ const useStyles = makeStyles({
     },
 });
 
-const Searchbar = (props) => {
+const Searchbar = React.memo((props) => {
     const styles = useStyles();
 
     return (
@@ -54,7 +54,14 @@ const Searchbar = (props) => {
                 </IconButton>
             </div>
             <div className={styles.box}>
-                <Filter orderChanged={() => {}} durationChanged={() => {}} qualityChanged={() => {}} />
+                <Filter
+                    order={props.order}
+                    orderChanged={props.orderChanged}
+                    duration={props.duration}
+                    durationChanged={props.durationChanged}
+                    quality={props.quality}
+                    qualityChanged={props.qualityChanged}
+                />
             </div>
             <Divider className={styles.divider} orientation="vertical" />
             <div className={styles.box}>
@@ -64,6 +71,6 @@ const Searchbar = (props) => {
             </div>
         </Paper>
     );
-};
+});
 
 export default Searchbar;
