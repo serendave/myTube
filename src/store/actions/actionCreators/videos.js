@@ -24,6 +24,16 @@ export const likedRemove = (videoId) => ({
     videoId,
 });
 
+export const collectionCreate = (collectionName) => ({
+    type: actions.VIDEOS_COLLECTION_CREATE,
+    collectionName
+});
+
+export const collectionDelete = (collectionId) => ({
+    type: actions.VIDEOS_COLLECTION_DELETE,
+    collectionId
+});
+
 const fetchCollecionsStart = () => ({
     type: actions.VIDEOS_FETCH_START,
 });
@@ -48,7 +58,7 @@ export const fetchCollections = (token, userId) => {
         // Fetching the results
         axios.get(url)
             .then((videos) => {
-                console.log(videos);
+                // console.log(videos);
 
                 dispatch(fetchCollecionsSuccess(videos.data));
             })
@@ -59,35 +69,3 @@ export const fetchCollections = (token, userId) => {
             });
     };
 };
-
-/*
-
-export const fetchOrders = (token, userId) => {
-    return dispatch => {
-        // Start fetching the orders to load the spinner
-        dispatch(fetchOrdersStart());
-        
-        // After fetching the orders show load them
-
-        // Query param auth to require a token
-        // orderBy is a param understood by firebase
-        const queryParams = `?auth=${token}&orderBy="userId"&equalTo="${userId}"`;
-
-        axios.get("/orders.json" + queryParams)
-            .then(orders => {
-                const fetchedOrders = [];
-                for (let key in orders.data) {
-                    fetchedOrders.push({
-                        ...orders.data[key],
-                        id: key
-                    });
-                }
-                dispatch(fetchOrdersSuccess(fetchedOrders));
-            })
-            .catch(error => {
-                dispatch(fetchOrdersFailed(error));
-            });
-    };
-};
-
-*/

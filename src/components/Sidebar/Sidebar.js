@@ -1,13 +1,15 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import FolderIcon from "@material-ui/icons/Folder";
-import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Divider } from "@material-ui/core";
-import { NavLink } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import AddCollection from "../AddElement/AddCollection/AddCollection";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
     sidebar: {
@@ -37,6 +39,25 @@ const useStyles = makeStyles((theme) => ({
 const Sidebar = (props) => {
     const classes = useStyles();
 
+    const customCollections = useSelector((state) => state.videos.collections);
+
+    const collections = [];
+    for (let collectionId in customCollections) {
+        collections.push(collectionId);
+    }
+
+    const collectionsFolders = collections.map((collectionId) => {
+        const link = `/videos/${collectionId}`;
+
+        return (
+            <NavLink to={link}>
+                <IconButton>
+                    <FolderIcon />
+                </IconButton>
+            </NavLink>
+        );
+    });
+
     return (
         <div className={classes.sidebar}>
             <Divider />
@@ -56,12 +77,10 @@ const Sidebar = (props) => {
                         <ThumbUpIcon className={classes.likedIcon} />
                     </IconButton>
                 </NavLink>
-                <IconButton aria-label="collection-1">
-                    <FolderIcon />
-                </IconButton>
-                <IconButton aria-label="collection-2">
-                    <FolderIcon />
-                </IconButton>
+                {collectionsFolders}
+                <div>
+                    <AddCollection />
+                </div>
             </Paper>
         </div>
     );
