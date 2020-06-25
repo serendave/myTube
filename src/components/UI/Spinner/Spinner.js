@@ -6,7 +6,8 @@ const useStyles = makeStyles({
     root: props => {
         const defaultStyle = {
             width: "100%",
-            height: "100%"
+            height: "100%",
+            minHeight: "inherit"
         };
 
         if (props.centered) {

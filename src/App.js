@@ -23,18 +23,19 @@ const App = () => {
     let routes = (
         <Fragment>
             <Redirect to="/login" />
-            <Switch>
-                <Route path="/login" component={Loginpage} />
-            </Switch>
+            <Route path="/login" component={Loginpage} />
         </Fragment>
     );
 
     if (isAuthenticated) {
         routes = (
-            <Switch>
-                <Route path="/" exact component={Mainpage} />
-                <Route path="/login" component={Loginpage} />
-            </Switch>
+            <Fragment>
+                <Redirect to="/videos" />
+                <Switch>
+                    <Route path="/videos" component={Mainpage} />
+                    <Route path="/login" component={Loginpage} />
+                </Switch>
+            </Fragment>
         );
     }
 

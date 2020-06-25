@@ -81,7 +81,7 @@ const Filter = (props) => {
                         <Select
                             value={props.order}
                             onChange={(e) => orderChanged(e.target.value)}
-                            color="secondary"
+                            color="primary"
                         >
                             <MenuItem value="date">Date</MenuItem>
                             <MenuItem value="rating">Rating</MenuItem>
@@ -99,14 +99,26 @@ const Filter = (props) => {
                             value={props.duration}
                             onChange={(e) => durationChanged(e.target.value)}
                         >
-                            <FormControlLabel value="any" control={<Radio size="small" />} label="Any" />
-                            <FormControlLabel value="short" control={<Radio size="small" />} label="Short" />
+                            <FormControlLabel
+                                value="any"
+                                control={<Radio size="small" color="primary" />}
+                                label="Any"
+                            />
+                            <FormControlLabel
+                                value="short"
+                                control={<Radio size="small" color="primary" />}
+                                label="Short"
+                            />
                             <FormControlLabel
                                 value="medium"
-                                control={<Radio size="small" />}
+                                control={<Radio size="small" color="primary" />}
                                 label="Medium"
                             />
-                            <FormControlLabel value="long" control={<Radio size="small" />} label="Long" />
+                            <FormControlLabel
+                                value="long"
+                                control={<Radio size="small" color="primary" />}
+                                label="Long"
+                            />
                         </RadioGroup>
                     </FormControl>
                     <FormControl className={styles.menuSection}>
@@ -118,9 +130,21 @@ const Filter = (props) => {
                             value={props.quality}
                             onChange={(e) => qualityChanged(e.target.value)}
                         >
-                            <FormControlLabel value="any" control={<Radio size="small" />} label="Any" />
-                            <FormControlLabel value="standard" control={<Radio size="small" />} label="SD" />
-                            <FormControlLabel value="high" control={<Radio size="small" />} label="HD" />
+                            <FormControlLabel
+                                value="any"
+                                control={<Radio size="small" color="primary" />}
+                                label="Any"
+                            />
+                            <FormControlLabel
+                                value="standard"
+                                control={<Radio size="small" color="primary" />}
+                                label="SD"
+                            />
+                            <FormControlLabel
+                                value="high"
+                                control={<Radio size="small" color="primary" />}
+                                label="HD"
+                            />
                         </RadioGroup>
                     </FormControl>
                 </div>

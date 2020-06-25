@@ -48,7 +48,7 @@ const LoginForm = (props) => {
             </Typography>
             <TextField
                 className={classNames(styles.controls, styles.input)}
-                color="secondary"
+                color="primary"
                 variant="outlined"
                 type="email"
                 label="Email"
@@ -58,7 +58,7 @@ const LoginForm = (props) => {
             />
             <TextField
                 className={classNames(styles.controls, styles.input)}
-                color="secondary"
+                color="primary"
                 variant="outlined"
                 type="password"
                 label="Password"
@@ -66,10 +66,10 @@ const LoginForm = (props) => {
                 onChange={(e) => passwordChanged(e.target.value)}
             />
             <div className={classNames(styles.buttonBox, styles.controls, styles.root)}>
-                <Button variant="contained" color="secondary" onClick={authStateToggled}>
+                <Button variant="contained" color="primary" onClick={authStateToggled}>
                     {props.authState === "login" ? "Register" : "Login"}
                 </Button>
-                <Button variant="contained" color="secondary" onClick={authenticated}>
+                <Button variant="contained" color="primary" onClick={authenticated}>
                     {props.authState === "login" ? "Sign in" : "Sign up"}
                 </Button>
             </div>
@@ -77,7 +77,7 @@ const LoginForm = (props) => {
     );
 
     if (props.loading) {
-        formContent = <Spinner color="secondary" size="100px" centered="true" />;
+        formContent = <Spinner color="primary" size="100px" centered="true" />;
     }
 
     return (

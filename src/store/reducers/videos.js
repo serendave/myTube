@@ -3,6 +3,8 @@ import * as actions from "../actions/actions";
 const initialState = {
     favorites: null,
     liked: null,
+    loading: false,
+    error: null,
 };
 
 /**
@@ -50,19 +52,25 @@ const removeVideoFromCollection = (state, collection, id) => {
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
+        case actions.VIDEOS_FETCH_START:
+            return { ...state, loading: true };
+        case actions.VIDEOS_FETCH_SUCCESS:
+            return { ...state, ...action.videos, loading: false };
+        case actions.VIDEOS_FETCH_FAIL:
+            return { ...state, loading: false, error: action.error };
         case actions.VIDEOS_FAVORITES_ADD:
             return addVideoToCollection(state, "favorites", {
                 id: action.videoId,
                 title: action.videoTitle,
             });
-        case actions.VIDEOS_FAVORITES_REMOVE: 
+        case actions.VIDEOS_FAVORITES_REMOVE:
             return removeVideoFromCollection(state, "favorites", action.videoId);
         case actions.VIDEOS_LIKED_ADD:
             return addVideoToCollection(state, "liked", {
                 id: action.videoId,
-                title: action.videoTitle
+                title: action.videoTitle,
             });
-        case actions.VIDEOS_LIKED_REMOVE: 
+        case actions.VIDEOS_LIKED_REMOVE:
             return removeVideoFromCollection(state, "liked", action.videoId);
         default:
             return state;

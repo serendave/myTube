@@ -5,9 +5,9 @@ import SearchIcon from "@material-ui/icons/Search";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import FolderIcon from "@material-ui/icons/Folder";
-// import classNames from "classnames";
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Divider } from "@material-ui/core";
+import { NavLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     sidebar: {
@@ -19,10 +19,10 @@ const useStyles = makeStyles((theme) => ({
     },
     root: {
         height: "100%",
-        "& > *": {
+        "& > * > *": {
             margin: theme.spacing(1),
         },
-        "& svg": {
+        "& > * svg": {
             fontSize: 30,
         },
     },
@@ -41,15 +41,21 @@ const Sidebar = (props) => {
         <div className={classes.sidebar}>
             <Divider />
             <Paper square className={classes.root}>
-                <IconButton aria-label="search">
-                    <SearchIcon />
-                </IconButton>
-                <IconButton aria-label="favorites">
-                    <FavoriteIcon className={classes.favoriteIcon} />
-                </IconButton>
-                <IconButton aria-label="liked">
-                    <ThumbUpIcon className={classes.likedIcon} />
-                </IconButton>
+                <NavLink to="/videos/search">
+                    <IconButton aria-label="search">
+                        <SearchIcon />
+                    </IconButton>
+                </NavLink>
+                <NavLink to="/videos/favorites">
+                    <IconButton aria-label="favorites">
+                        <FavoriteIcon className={classes.favoriteIcon} />
+                    </IconButton>
+                </NavLink>
+                <NavLink to="/videos/liked">
+                    <IconButton aria-label="liked">
+                        <ThumbUpIcon className={classes.likedIcon} />
+                    </IconButton>
+                </NavLink>
                 <IconButton aria-label="collection-1">
                     <FolderIcon />
                 </IconButton>

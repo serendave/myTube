@@ -40,7 +40,7 @@ const Login = (props) => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            history.push("/");
+            history.push("/videos/search");
         }
     }, [history, isAuthenticated]);
 

@@ -1,17 +1,21 @@
 import React, { Fragment } from "react";
-import { Paper, makeStyles, Typography } from "@material-ui/core";
+import { Paper, makeStyles, Typography, Divider } from "@material-ui/core";
 import VideoItem from "../VideoItem/VideoItem";
 import Spinner from "../../UI/Spinner/Spinner";
 
 const useStyles = makeStyles({
     root: {
         padding: 15,
+        minHeight: (props) => props.minHeight ?? 350,
+        position: "relative",
+        backgroundColor: "#384f66",
+        marginBottom: "3rem"
+    },
+    videosContainer: {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-        gridGap: 15,
-        backgroundColor: "#384f66",
-        minHeight: 350,
-        position: "relative",
+        alignItems: "start",
+        gridGap: 15
     },
     message: {
         position: "absolute",
@@ -19,30 +23,65 @@ const useStyles = makeStyles({
         left: "50%",
         transform: "translate(-50%, -50%)",
     },
+    gutter: {
+        marginBottom: 20
+    }
 });
 
 const VideoContainer = (props) => {
-    const styles = useStyles();
-    const { videos, loading } = props;
+    const { videos, loading, videosType, collectionType } = props;
+    const styles = useStyles(props);
+
+    let message = null;
+    let heading = null;
+
+    if (videosType === "search") {
+        message = "Type something in the search bar to see the results";
+        heading = (
+            <Typography variant="h4">
+                Search Results
+            </Typography>
+        );
+    } else if (videosType === "collection") {
+        message = "There is no videos in the collection yet";
+    }
+
+    if (collectionType === "favorites") {
+        heading = (
+            <Typography variant="h4">
+                Favorite videos
+            </Typography>
+        );
+    } else if (collectionType === "liked") {
+        heading = (
+            <Typography variant="h4">
+                Liked videos
+            </Typography>
+        );
+    }
 
     let content = (
         <Typography variant="h5" align="center" className={styles.message}>
-            Type something in the search bar to see the results
+            {message}
         </Typography>
     );
 
     if (loading) {
-        content = <Spinner color="secondary" size="100px" centered="true" />;
+        content = <Spinner color="primary" size="100px" centered="true" />;
     }
 
     if (videos.length > 0) {
         content = (
             <Fragment>
-                {videos.map((video) => {
-                    return <VideoItem videoId={video.id} title={video.title} key={video.id} />;
-                })}
+                {heading}
+                <Divider className={styles.gutter} />
+                <div className={styles.videosContainer}>
+                    {videos.map((video) => {
+                        return <VideoItem videoId={video.id} title={video.title} key={video.id} />;
+                    })}
+                </div>
             </Fragment>
-        ); 
+        );
     }
 
     return <Paper className={styles.root}>{content}</Paper>;

@@ -2,6 +2,7 @@ import React, { useState, useReducer } from "react";
 import Searchbar from "../../components/Searchbar/Searchbar";
 import VideoContainer from "../../components/Video/VideoContainer/VideoContainer";
 
+// http
 import axios from "axios";
 import videosUrl from "../../config/videosAPI/videosAPI";
 
@@ -40,21 +41,10 @@ const Home = () => {
         quality: "any",
     });
 
-    function clearSearchHandler() {
-        setSearchQuery("");
-    }
-
-    const setOrderHandler = (order) => {
-        dispatch({ type: "SET_ORDER", order });
-    };
-
-    const setDurationHandler = (duration) => {
-        dispatch({ type: "SET_DURATION", duration });
-    };
-
-    const setQualityHandler = (quality) => {
-        dispatch({ type: "SET_QUALITY", quality });
-    };
+    const clearSearchHandler = () => setSearchQuery("");
+    const setOrderHandler = (order) => dispatch({ type: "SET_ORDER", order });
+    const setDurationHandler = (duration) => dispatch({ type: "SET_DURATION", duration });
+    const setQualityHandler = (quality) => dispatch({ type: "SET_QUALITY", quality });
 
     const startSearchHanlder = () => {
         setVideosLoading(true);
@@ -112,7 +102,7 @@ const Home = () => {
                 quality={filters.quality}
                 qualityChanged={setQualityHandler}
             />
-            <VideoContainer videos={videos} loading={videosLoading} />
+            <VideoContainer videos={videos} loading={videosLoading} videosType="search" />
         </div>
     );
 };
