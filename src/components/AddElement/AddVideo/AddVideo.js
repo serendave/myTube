@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 
+import * as actions from "../../../store/actions/actionCreators/videos";
+import { useSelector, useDispatch } from "react-redux";
+
 import Menu from "@material-ui/core/Menu";
 import {
     Button,
@@ -10,7 +13,6 @@ import {
     Checkbox,
     Divider,
 } from "@material-ui/core";
-import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
     menu: {
@@ -30,34 +32,35 @@ const useStyles = makeStyles({
 
 const AddVideo = (props) => {
     const styles = useStyles();
-    const { videoId, anchorEl, closeMenuHandler } = props;
+    const { videoId, title, anchorEl, closeMenuHandler } = props;
 
     const [collections, setCollections] = useState(null);
     const stateCollections = useSelector((state) => state.videos.collections);
+    const dispatch = useDispatch();
+    const onAddVideoToCollection = (collectionId, videoId, videoTitle) =>
+        dispatch(actions.collectionAdd(collectionId, videoId, videoTitle));
+    const onRemoveVideoFromCollection = (collectionId, videoId) =>
+        dispatch(actions.collectionRemove(collectionId, videoId));
 
     useEffect(() => {
         const formattedCollections = {};
 
         for (let collectionId in stateCollections) {
-            let videoPresentInCollection = false;
+            let videoAdded = false;
             for (let id in stateCollections[collectionId].videos) {
                 if (videoId === id) {
-                    videoPresentInCollection = true;
+                    videoAdded = true;
                     break;
                 }
             }
             formattedCollections[collectionId] = {
                 name: stateCollections[collectionId].name,
-                videoPresentInCollection,
+                videoAdded,
             };
         }
 
         setCollections(formattedCollections);
-    }, []);
-
-    useEffect(() => {
-        console.log(collections);
-    }, [collections]);
+    }, [stateCollections, videoId]);
 
     const toggleVideoPresenceHandler = (collectionId) => {
         setCollections((previousCollections) => {
@@ -65,16 +68,22 @@ const AddVideo = (props) => {
                 ...previousCollections,
                 [collectionId]: {
                     ...previousCollections[collectionId],
-                    videoPresentInCollection: !previousCollections[collectionId].videoPresentInCollection,
+                    videoAdded: !previousCollections[collectionId].videoAdded,
                 },
             };
         });
     };
 
-    const addVideoToCollectionHandler = () => {
-        // useDispatch
-    };
-
+    const manageCollectionsHandler = () => {
+        for (let collectionId in collections) {
+            if (collections[collectionId].videoAdded) {
+                onAddVideoToCollection(collectionId, videoId, title);
+            } else {
+                onRemoveVideoFromCollection(collectionId, videoId);
+            }
+        }
+    }
+    
     let content = <Typography variant="subtitle1">There is no collections created yet</Typography>;
 
     if (collections && Object.keys(collections).length > 0) {
@@ -86,7 +95,7 @@ const AddVideo = (props) => {
                     control={
                         <Checkbox
                             color="primary"
-                            checked={collections[collectionId].videoPresentInCollection}
+                            checked={collections[collectionId].videoAdded}
                             onChange={() => toggleVideoPresenceHandler(collectionId)}
                         />
                     }
@@ -106,7 +115,7 @@ const AddVideo = (props) => {
                     color="primary"
                     variant="contained"
                     className={styles.button}
-                    onClick={addVideoToCollectionHandler}
+                    onClick={manageCollectionsHandler}
                 >
                     Save
                 </Button>

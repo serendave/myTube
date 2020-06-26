@@ -109,7 +109,12 @@ const VideoItem = React.memo((props) => {
     if (anchorEl) {
         menu = (
             <Suspense fallback={null}>
-                <AddVideoMenu videoId={videoId} anchorEl={anchorEl} closeMenuHandler={closeMenuHandler} />
+                <AddVideoMenu
+                    videoId={videoId}
+                    anchorEl={anchorEl}
+                    closeMenuHandler={closeMenuHandler}
+                    title={title}
+                />
             </Suspense>
         );
     }

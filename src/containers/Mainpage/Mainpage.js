@@ -57,6 +57,10 @@ const Mainpage = (props) => {
                             path="/videos/liked"
                             render={(props) => <Collection {...props} type="liked" />}
                         />
+                        <Route
+                            path="/videos/:id"
+                            render={(props) => <Collection {...props} type="custom" />}
+                        />
                     </Switch>
                 </Grid>
                 <Grid item xs={1}></Grid>

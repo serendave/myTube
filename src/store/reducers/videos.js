@@ -24,32 +24,95 @@ const initialState = {
  *     videoId: title
  * }
  *
- * collections..
+ * collections: {
+ *     :collectionId: {
+ *         name: collectionName,
+ *         videos: {
+ *             videoId: title
+ *             videoId: title
+ *         }
+ *     }
+ * }
  *
  */
 
-const addVideoToCollection = (state, collection, videoId, videoTitle) => {
-    return {
-        ...state,
-        [collection]: {
-            ...state[collection],
-            [videoId]: videoTitle,
-        },
-    };
-};
-
-const removeVideoFromCollection = (state, collection, id) => {
-    const filteredCollection = Object.keys(state[collection]).reduce((object, videoId) => {
+const filterCollection = (collection, id) => {
+    return Object.keys(collection).reduce((object, videoId) => {
         if (videoId !== id) {
-            object[videoId] = state[collection][videoId];
+            object[videoId] = collection[videoId];
         }
         return object;
     }, {});
+};
 
-    return {
-        ...state,
-        [collection]: filteredCollection,
-    };
+const addVideoToCollection = (state, videoId, videoTitle, collectionType, collectionId) => {
+    let newState = { ...state };
+
+    switch (collectionType) {
+        case "favorites":
+        case "liked":
+            newState = {
+                ...state,
+                [collectionType]: {
+                    ...state[collectionType],
+                    [videoId]: videoTitle,
+                },
+            };
+            break;
+        case "custom":
+            newState = {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    [collectionId]: {
+                        ...state.collections[collectionId],
+                        videos: {
+                            ...state.collections[collectionId].videos,
+                            [videoId]: videoTitle
+                        }
+                    },
+                },
+            };
+            break;
+        default:
+            break;
+    }
+
+    return newState;
+};
+
+const removeVideoFromCollection = (state, videoId, collectionType, collectionId) => {
+    let newState = { ...state };
+    let filteredCollection;
+
+    switch (collectionType) {
+        case "favorites":
+        case "liked":
+            filteredCollection = filterCollection(state[collectionType], videoId);
+            newState = {
+                ...state,
+                [collectionType]: filteredCollection,
+            };
+            break;
+        case "custom":
+            filteredCollection = filteredCollection(state.collections[collectionId].videos, videoId);
+
+            newState = {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    [collectionId]: {
+                        ...state.collections[collectionId],
+                        videos: filteredCollection
+                    }
+                }
+            };
+            break;
+        default:
+            break;
+    }
+
+    return newState;
 };
 
 const createCollection = (state, collectionName) => {
@@ -78,7 +141,7 @@ const deleteCollection = (state, id) => {
 
     return {
         ...state,
-        collections: filteredCollections
+        collections: filteredCollections,
     };
 };
 
@@ -91,17 +154,21 @@ const reducer = (state = initialState, action) => {
         case actions.VIDEOS_FETCH_FAIL:
             return { ...state, loading: false, error: action.error };
         case actions.VIDEOS_FAVORITES_ADD:
-            return addVideoToCollection(state, "favorites", action.videoId, action.videoTitle);
+            return addVideoToCollection(state, action.videoId, action.videoTitle, "favorites");
         case actions.VIDEOS_FAVORITES_REMOVE:
-            return removeVideoFromCollection(state, "favorites", action.videoId);
+            return removeVideoFromCollection(state, action.videoId, "favorites");
         case actions.VIDEOS_LIKED_ADD:
-            return addVideoToCollection(state, "liked", action.videoId, action.videoTitle);
+            return addVideoToCollection(state, action.videoId, action.videoTitle, "liked");
         case actions.VIDEOS_LIKED_REMOVE:
-            return removeVideoFromCollection(state, "liked", action.videoId);
+            return removeVideoFromCollection(state, action.videoId, "liked");
         case actions.VIDEOS_COLLECTION_CREATE:
             return createCollection(state, action.collectionName);
         case actions.VIDEOS_COLLECTION_DELETE:
             return deleteCollection(state, action.collectionId);
+        case actions.VIDEOS_COLLECTION_ADD:
+            return addVideoToCollection(state, action.videoId, action.videoTitle, "custom", action.collectionId);
+        case actions.VIDEOS_COLLECTION_DELETE:
+            return removeVideoFromCollection(state, action.videoId, "custom", action.collectionId);
         default:
             return state;
     }

@@ -34,6 +34,19 @@ export const collectionDelete = (collectionId) => ({
     collectionId
 });
 
+export const collectionAdd = (collectionId, videoId, videoTitle) => ({
+    type: actions.VIDEOS_COLLECTION_ADD,
+    collectionId,
+    videoId,
+    videoTitle
+});
+
+export const collectionRemove = (collectionId, videoId) => ({
+    type: actions.VIDEOS_COLLECTION_REMOVE,
+    collectionId,
+    videoId
+});
+
 const fetchCollecionsStart = () => ({
     type: actions.VIDEOS_FETCH_START,
 });

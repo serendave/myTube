@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 // Redux
 import { useSelector } from "react-redux";
@@ -34,6 +34,10 @@ const Collection = (props) => {
                 break;
             case "liked":
                 formatVideos(state.videos.liked, formattedVideos);
+                break;
+            case "custom":
+                const collectionId = props.match.params.id;
+                formatVideos(state.videos.collections[collectionId].videos, formattedVideos);
             default:
                 break;
         }
