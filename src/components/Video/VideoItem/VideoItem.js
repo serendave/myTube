@@ -36,12 +36,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const AddVideo = React.lazy(() => import("../../AddElement/AddVideo/AddVideo"));
-const renderLoader = () => <p>Loading...</p>;
+const AddVideoMenu = React.lazy(() => import("../../AddElement/AddVideo/AddVideo"));
 
 const VideoItem = React.memo((props) => {
     const styles = useStyles();
-    const [loadMenu, setLoadMenu] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(false);
 
     const { videoId, title } = props;
 
@@ -63,16 +62,16 @@ const VideoItem = React.memo((props) => {
     const onLikedAdd = () => dispatch(actions.likedAdd(videoId, title));
     const onLikedRemove = () => dispatch(actions.likedRemove(videoId));
 
-    const openLoadMenuHandler = () => {
-        setLoadMenu(true);
+    const openMenuHandler = (event) => {
+        setAnchorEl(event.currentTarget);
     };
 
-    const closeLoadMenuHandler = () => {
-        setLoadMenu(false);
+    const closeMenuHandler = () => {
+        setAnchorEl(null);
     };
 
     let addVideoButton = (
-        <IconButton size="small" onClick={openLoadMenuHandler}>
+        <IconButton aria-controls="add-video" aria-haspopup="true" size="small" onClick={openMenuHandler}>
             <AddIcon />
         </IconButton>
     );
@@ -105,10 +104,12 @@ const VideoItem = React.memo((props) => {
         );
     }
 
-    if (loadMenu) {
-        addVideoButton = (
-            <Suspense fallback={renderLoader()}>
-                <AddVideo videoId={videoId} closeLoadMenuHandler={closeLoadMenuHandler} />
+    let menu = null;
+
+    if (anchorEl) {
+        menu = (
+            <Suspense fallback={null}>
+                <AddVideoMenu videoId={videoId} anchorEl={anchorEl} closeMenuHandler={closeMenuHandler} />
             </Suspense>
         );
     }
@@ -136,6 +137,7 @@ const VideoItem = React.memo((props) => {
                 {likedButton}
                 {favoriteButton}
                 {addVideoButton}
+                {menu}
                 <IconButton size="small">
                     <FullscreenIcon />
                 </IconButton>

@@ -1,8 +1,6 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import Menu from "@material-ui/core/Menu";
-import IconButton from "@material-ui/core/IconButton";
-import AddIcon from "@material-ui/icons/Add";
 import {
     Button,
     makeStyles,
@@ -32,8 +30,7 @@ const useStyles = makeStyles({
 
 const AddVideo = (props) => {
     const styles = useStyles();
-    const { videoId, closeLoadMenuHandler } = props;
-    const [anchorEl, setAnchorEl] = useState(null);
+    const { videoId, anchorEl, closeMenuHandler } = props;
 
     const [collections, setCollections] = useState(null);
     const stateCollections = useSelector((state) => state.videos.collections);
@@ -62,14 +59,6 @@ const AddVideo = (props) => {
         console.log(collections);
     }, [collections]);
 
-    const openMenuHandler = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const closeMenuHandler = () => {
-        setAnchorEl(null);
-    };
-
     const toggleVideoPresenceHandler = (collectionId) => {
         setCollections((previousCollections) => {
             return {
@@ -77,18 +66,18 @@ const AddVideo = (props) => {
                 [collectionId]: {
                     ...previousCollections[collectionId],
                     videoPresentInCollection: !previousCollections[collectionId].videoPresentInCollection,
-                }
+                },
             };
         });
     };
 
     const addVideoToCollectionHandler = () => {
         // useDispatch
-    }
-    
+    };
+
     let content = <Typography variant="subtitle1">There is no collections created yet</Typography>;
 
-    if (collections) {
+    if (collections && Object.keys(collections).length > 0) {
         let displayCollections = [];
 
         for (let collectionId in collections) {
@@ -126,25 +115,17 @@ const AddVideo = (props) => {
     }
 
     return (
-        <Fragment>
-            <IconButton aria-controls="add-video" aria-haspopup="true" size="small" onClick={openMenuHandler}>
-                <AddIcon />
-            </IconButton>
-            <Menu
-                id="add-video"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={() => {
-                    closeMenuHandler();
-                    closeLoadMenuHandler();
-                }}
-                className={styles.menu}
-                elevation={5}
-            >
-                {content}
-            </Menu>
-        </Fragment>
+        <Menu
+            id="add-video"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={closeMenuHandler}
+            className={styles.menu}
+            elevation={5}
+        >
+            {content}
+        </Menu>
     );
 };
 
