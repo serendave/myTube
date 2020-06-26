@@ -50,7 +50,7 @@ const Sidebar = (props) => {
         const link = `/videos/${collectionId}`;
 
         return (
-            <NavLink to={link}>
+            <NavLink to={link} key={collectionId}>
                 <IconButton>
                     <FolderIcon />
                 </IconButton>

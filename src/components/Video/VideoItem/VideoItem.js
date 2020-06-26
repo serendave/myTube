@@ -1,12 +1,12 @@
-import React from "react";
+import React, { Suspense, useState } from "react";
 
 // Material UI
 import { Card, CardContent, Typography, Divider, CardActions, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import AddIcon from "@material-ui/icons/Add";
 import FullscreenIcon from "@material-ui/icons/Fullscreen";
+import AddIcon from "@material-ui/icons/Add";
 
 // Redux
 import * as actions from "../../../store/actions/actionCreators/videos";
@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
     buttons: {
         justifyContent: "flex-end",
+        alignItems: "center",
     },
     favoriteIcon: {
         fill: "#ffc107",
@@ -35,8 +36,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const AddVideo = React.lazy(() => import("../../AddElement/AddVideo/AddVideo"));
+const renderLoader = () => <p>Loading...</p>;
+
 const VideoItem = React.memo((props) => {
     const styles = useStyles();
+    const [loadMenu, setLoadMenu] = useState(false);
+
     const { videoId, title } = props;
 
     const isVideoFavorite = useSelector((state) => isVideoPresent(state.videos.favorites, videoId));
@@ -57,6 +63,20 @@ const VideoItem = React.memo((props) => {
     const onLikedAdd = () => dispatch(actions.likedAdd(videoId, title));
     const onLikedRemove = () => dispatch(actions.likedRemove(videoId));
 
+    const openLoadMenuHandler = () => {
+        setLoadMenu(true);
+    };
+
+    const closeLoadMenuHandler = () => {
+        setLoadMenu(false);
+    };
+
+    let addVideoButton = (
+        <IconButton size="small" onClick={openLoadMenuHandler}>
+            <AddIcon />
+        </IconButton>
+    );
+
     let favoriteButton = (
         <IconButton size="small" onClick={onFavoritesAdd}>
             <FavoriteIcon />
@@ -68,11 +88,11 @@ const VideoItem = React.memo((props) => {
             <ThumbUpIcon />
         </IconButton>
     );
-    
+
     if (isVideoFavorite) {
         favoriteButton = (
             <IconButton size="small" onClick={onFavoritesRemove}>
-                <FavoriteIcon  className={styles.favoriteIcon} />
+                <FavoriteIcon className={styles.favoriteIcon} />
             </IconButton>
         );
     }
@@ -80,8 +100,16 @@ const VideoItem = React.memo((props) => {
     if (isVideoLiked) {
         likedButton = (
             <IconButton size="small" onClick={onLikedRemove}>
-                <ThumbUpIcon  className={styles.likedIcon} />
+                <ThumbUpIcon className={styles.likedIcon} />
             </IconButton>
+        );
+    }
+
+    if (loadMenu) {
+        addVideoButton = (
+            <Suspense fallback={renderLoader()}>
+                <AddVideo videoId={videoId} closeLoadMenuHandler={closeLoadMenuHandler} />
+            </Suspense>
         );
     }
 
@@ -107,9 +135,7 @@ const VideoItem = React.memo((props) => {
             <CardActions className={styles.buttons}>
                 {likedButton}
                 {favoriteButton}
-                <IconButton size="small">
-                    <AddIcon />
-                </IconButton>
+                {addVideoButton}
                 <IconButton size="small">
                     <FullscreenIcon />
                 </IconButton>
