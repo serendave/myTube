@@ -1,32 +1,64 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-import IconButton from "@material-ui/core/IconButton";
-import SearchIcon from "@material-ui/icons/Search";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import ThumbUpIcon from "@material-ui/icons/ThumbUp";
-import FolderIcon from "@material-ui/icons/Folder";
-import { Paper, Divider } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+// Material UI
+import { Paper, Divider, Drawer, List, CssBaseline } from "@material-ui/core";
+import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import AddCollection from "../AddElement/AddCollection/AddCollection";
 import { useSelector } from "react-redux";
+import clsx from "clsx";
+
+// Material UI icons
+import IconButton from "@material-ui/core/IconButton";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import SearchIcon from "@material-ui/icons/Search";
+import FolderIcon from "@material-ui/icons/Folder";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const useStyles = makeStyles((theme) => ({
-    sidebar: {
-        width: 70,
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+    sideBar: (props) => ({
+        width: props.sideBarWidth,
+        flexShrink: 0,
+        whiteSpace: "nowrap",
+        minHeight: "inherit",
+        height: 1,
+    }),
+    sideBarOpen: (props) => ({
+        width: props.sideBarWidth,
+        transition: theme.transitions.create("width", {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }),
+    sideBarClose: {
+        transition: theme.transitions.create("width", {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        overflowX: "hidden",
+        width: theme.spacing(8) + 1,
+        // [theme.breakpoints.up("sm")]: {
+        //     width: theme.spacing(9) + 1,
+        // },
     },
-    root: {
-        height: "100%",
-        "& > * > *": {
-            margin: theme.spacing(1),
-        },
-        "& > * svg": {
-            fontSize: 30,
-        },
+    paper: {
+        position: "static",
+    },
+    toolbar: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        padding: theme.spacing(0, 1),
+        ...theme.mixins.toolbar,
+    },
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing(3),
     },
     favoriteIcon: {
         fill: "#ffc107",
@@ -34,55 +66,106 @@ const useStyles = makeStyles((theme) => ({
     likedIcon: {
         fill: "#f50057",
     },
+    listItemIcon: {
+        minWidth: 46,
+    },
 }));
 
+const CustomListItemIcon = withStyles({
+    root: {
+        minWidth: 50,
+    },
+})((props) => <ListItemIcon {...props} />);
+
 const Sidebar = (props) => {
-    const classes = useStyles();
+    const styles = useStyles(props);
+    const theme = useTheme();
+
+    const { open, sideBarClosed } = props;
 
     const customCollections = useSelector((state) => state.videos.collections);
 
     const collections = [];
     for (let collectionId in customCollections) {
-        collections.push(collectionId);
+        collections.push({ name: customCollections[collectionId].name, id: collectionId });
     }
 
-    const collectionsFolders = collections.map((collectionId) => {
-        const link = `/videos/${collectionId}`;
+    const collectionsFolders = collections.map((collection) => {
+        const link = `/videos/${collection.id}`;
+
+        let name = collection.name;
+        if (collection.name.length > 10) {
+            name = collection.name.substr(0, 9) + "...";
+        }
 
         return (
-            <NavLink to={link} key={collectionId}>
-                <IconButton>
-                    <FolderIcon />
-                </IconButton>
+            <NavLink to={link} key={collection.id}>
+                <ListItem button>
+                    <CustomListItemIcon>
+                        <FolderIcon />
+                    </CustomListItemIcon>
+                    <ListItemText primary={name} />
+                </ListItem>
             </NavLink>
         );
     });
 
     return (
-        <div className={classes.sidebar}>
+        <Drawer
+            variant="permanent"
+            className={clsx(styles.sideBar, {
+                [styles.sideBarOpen]: open,
+                [styles.sideBarClose]: !open,
+            })}
+            classes={{
+                paper: clsx(styles.paper, {
+                    [styles.sideBarOpen]: open,
+                    [styles.sideBarClose]: !open,
+                }),
+            }}
+            style={{
+                marginTop: -64,
+                height: "calc(100% + 64px)",
+            }}
+        >
+            <div className={styles.toolbar}>
+                <IconButton onClick={sideBarClosed}>
+                    {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                </IconButton>
+            </div>
             <Divider />
-            <Paper square className={classes.root}>
+            <CssBaseline />
+            <List>
                 <NavLink to="/videos/search">
-                    <IconButton aria-label="search">
-                        <SearchIcon />
-                    </IconButton>
+                    <ListItem button>
+                        <CustomListItemIcon classes={{ root: styles.CustomListItemIcon }}>
+                            <SearchIcon />
+                        </CustomListItemIcon>
+                        <ListItemText primary="Search" />
+                    </ListItem>
                 </NavLink>
                 <NavLink to="/videos/favorites">
-                    <IconButton aria-label="favorites">
-                        <FavoriteIcon className={classes.favoriteIcon} />
-                    </IconButton>
+                    <ListItem button>
+                        <CustomListItemIcon>
+                            <FavoriteIcon className={styles.favoriteIcon} />
+                        </CustomListItemIcon>
+                        <ListItemText primary="Favorites" />
+                    </ListItem>
                 </NavLink>
                 <NavLink to="/videos/liked">
-                    <IconButton aria-label="liked">
-                        <ThumbUpIcon className={classes.likedIcon} />
-                    </IconButton>
+                    <ListItem button>
+                        <CustomListItemIcon>
+                            <ThumbUpIcon className={styles.likedIcon} />
+                        </CustomListItemIcon>
+                        <ListItemText primary="Liked" />
+                    </ListItem>
                 </NavLink>
+                <Divider />
                 {collectionsFolders}
-                <div>
-                    <AddCollection />
-                </div>
-            </Paper>
-        </div>
+                <Divider />
+                <AddCollection />
+            </List>
+        </Drawer>
     );
 };
 

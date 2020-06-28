@@ -8,13 +8,14 @@ import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
     root: {
-        padding: 25,
+        padding: 25
     },
 });
 
 const Collection = (props) => {
     const { type } = props;
     const styles = useStyles();
+    let collectionTitle = null;
 
     const formatVideos = (collection, resultArray) => {
         for (let videoId in collection) {
@@ -37,7 +38,11 @@ const Collection = (props) => {
                 break;
             case "custom":
                 const collectionId = props.match.params.id;
-                formatVideos(state.videos.collections[collectionId].videos, formattedVideos);
+                const collection = state.videos.collections[collectionId]; 
+                collectionTitle = collection.name; 
+
+                formatVideos(collection.videos, formattedVideos);
+                break;
             default:
                 break;
         }
@@ -47,7 +52,13 @@ const Collection = (props) => {
 
     return (
         <div className={styles.root}>
-            <VideoContainer videos={videos} videosType="collection" minHeight="500px" collectionType={type} />
+            <VideoContainer
+                videos={videos}
+                videosType="collection"
+                minHeight="500px"
+                collectionType={type}
+                collectionTitle={collectionTitle}
+            />
         </div>
     );
 };

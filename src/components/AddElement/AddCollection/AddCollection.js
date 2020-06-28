@@ -6,13 +6,14 @@ import * as actions from "../../../store/actions/actionCreators/videos";
 import Menu from "@material-ui/core/Menu";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
-import { InputBase, Button, makeStyles, Typography } from "@material-ui/core";
+import { InputBase, Button, makeStyles, Typography, ListItemIcon, ListItem, ListItemText } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
     menu: {
         "& ul": {
             padding: 10,
-        }
+        },
     },
     inputBox: {
         display: "flex",
@@ -26,6 +27,12 @@ const useStyles = makeStyles({
     },
 });
 
+const CustomListItemIcon = withStyles({
+    root: {
+        minWidth: 50,
+    },
+})((props) => <ListItemIcon {...props} />);
+
 const AddCollection = () => {
     const styles = useStyles();
 
@@ -34,13 +41,13 @@ const AddCollection = () => {
 
     const dispatch = useDispatch();
     const onCollectionCreate = (collectionName) => dispatch(actions.collectionCreate(collectionName));
-    
+
     const createCollectionHandler = () => {
         onCollectionCreate(collectionName);
 
         setCollectionName("");
-    }
-    
+    };
+
     const openMenuHandler = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -55,9 +62,12 @@ const AddCollection = () => {
 
     return (
         <div>
-            <IconButton aria-controls="add-collection" aria-haspopup="true" onClick={openMenuHandler}>
-                <AddIcon />
-            </IconButton>
+            <ListItem button aria-controls="add-collection" aria-haspopup="true" onClick={openMenuHandler}>
+                <CustomListItemIcon>
+                    <AddIcon />
+                </CustomListItemIcon>
+                <ListItemText primary="Add new" />
+            </ListItem>
             <Menu
                 id="add-collection"
                 anchorEl={anchorEl}
@@ -77,7 +87,7 @@ const AddCollection = () => {
                         value={collectionName}
                         placeholder="Collection name"
                         className={styles.input}
-                        onKeyDown={e => {
+                        onKeyDown={(e) => {
                             if (e.key === "Enter") {
                                 createCollectionHandler();
                             }

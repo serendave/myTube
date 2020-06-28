@@ -13,7 +13,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import image from "../../images/homepage-bg-2.jpg";
 const useStyles = makeStyles({
     page: {
-        // height: "calc(100% - 64px)",
         minHeight: "inherit",
         backgroundImage: `url(${image})`,
         backgroundPosition: "center",
@@ -22,13 +21,18 @@ const useStyles = makeStyles({
     content: {
         minHeight: "inherit",
     },
+    heightFix: {
+        minHeight: "inherit",
+    }
 });
 
 const Mainpage = (props) => {
     const classes = useStyles();
 
-    const userInfo = useSelector((state) => state.auth);
+    const { sideBar, sideBarClosed, sideBarWidth } = props;
 
+    // Redux
+    const userInfo = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const onCollectionsFetch = useCallback(
         (token, userId) => dispatch(actions.fetchCollections(token, userId)),
@@ -42,11 +46,10 @@ const Mainpage = (props) => {
     return (
         <div className={classes.page}>
             <Grid container className={classes.content}>
-                <Grid item xs={1}>
-                    <Sidebar />
+                <Grid item xs={2} className={classes.heightFix}>
+                    <Sidebar open={sideBar} sideBarClosed={sideBarClosed} sideBarWidth={sideBarWidth} />
                 </Grid>
-                <Grid item xs={1}></Grid>
-                <Grid item xs={8}>
+                <Grid item xs={9}>
                     <Switch>
                         <Route path="/videos/search" component={Home} />
                         <Route
