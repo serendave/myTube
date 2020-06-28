@@ -9,13 +9,13 @@ const useStyles = makeStyles({
         minHeight: (props) => props.minHeight ?? 350,
         position: "relative",
         backgroundColor: "#384f66",
-        marginBottom: "3rem"
+        marginBottom: "3rem",
     },
     videosContainer: {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
         alignItems: "start",
-        gridGap: 15
+        gridGap: 15,
     },
     message: {
         position: "absolute",
@@ -24,12 +24,15 @@ const useStyles = makeStyles({
         transform: "translate(-50%, -50%)",
     },
     gutter: {
-        marginBottom: 20
-    }
+        marginBottom: 20,
+    },
+    heading: {
+        textTransform: "capitalize",
+    },
 });
 
 const VideoContainer = (props) => {
-    const { videos, loading, videosType, collectionType } = props;
+    const { videos, loading, videosType, collectionType, collectionTitle } = props;
     const styles = useStyles(props);
 
     let message = null;
@@ -37,27 +40,27 @@ const VideoContainer = (props) => {
 
     if (videosType === "search") {
         message = "Type something in the search bar to see the results";
-        heading = (
-            <Typography variant="h4">
-                Search Results
-            </Typography>
-        );
+        heading = <Typography variant="h4">Search Results</Typography>;
     } else if (videosType === "collection") {
         message = "There is no videos in the collection yet";
     }
 
-    if (collectionType === "favorites") {
-        heading = (
-            <Typography variant="h4">
-                Favorite videos
-            </Typography>
-        );
-    } else if (collectionType === "liked") {
-        heading = (
-            <Typography variant="h4">
-                Liked videos
-            </Typography>
-        );
+    switch (collectionType) {
+        case "favorites":
+            heading = <Typography variant="h4">Favorite videos</Typography>;
+            break;
+        case "liked":
+            heading = <Typography variant="h4">Liked videos</Typography>;
+            break;
+        case "custom":
+            heading = (
+                <Typography variant="h4" className={styles.heading}>
+                    {collectionTitle}
+                </Typography>
+            );
+            break;
+        default:
+            break;
     }
 
     let content = (

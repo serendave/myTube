@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useCallback } from "react";
+import React, { Fragment, useEffect, useCallback, useState } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
-import { ThemeProvider } from "@material-ui/core/styles";
+import { ThemeProvider, makeStyles } from "@material-ui/core/styles";
 import theme from "./theme/default";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -10,15 +10,37 @@ import Mainpage from "./containers/Mainpage/Mainpage";
 import Loginpage from "./containers/Loginpage/Loginpage";
 import Header from "./components/Header/Header";
 
+const sideBarWidth = 165;
+
+const useStyles = makeStyles({
+    root: {
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "inherit"
+    }
+});
+
 const App = () => {
+    const styles = useStyles();
+
     const dispatch = useDispatch();
+    const [sideBarOpen, setSideBarOpen] = useState(false);
+
+    const openSideBarHandler = () => {
+        setSideBarOpen(true);
+    };
+
+    const closeSideBarHandler = () => {
+        setSideBarOpen(false);
+    };
 
     const isAuthenticated = useSelector((state) => state.auth.token !== null);
     const onTryAutoLogin = useCallback(() => dispatch(action.authCheckState()), [dispatch]);
 
     useEffect(() => {
         onTryAutoLogin();
-    }, [onTryAutoLogin]);
+        console.log(sideBarOpen);
+    }, [onTryAutoLogin, sideBarOpen]);
 
     let routes = (
         <Fragment>
@@ -32,7 +54,17 @@ const App = () => {
             <Fragment>
                 <Redirect to="/videos" />
                 <Switch>
-                    <Route path="/videos" component={Mainpage} />
+                    <Route
+                        path="/videos"
+                        render={(props) => (
+                            <Mainpage
+                                {...props}
+                                sideBar={sideBarOpen}
+                                sideBarClosed={closeSideBarHandler}
+                                sideBarWidth={sideBarWidth}
+                            />
+                        )}
+                    />
                     <Route path="/login" component={Loginpage} />
                 </Switch>
             </Fragment>
@@ -41,10 +73,14 @@ const App = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            <Fragment>
-                <Header />
+            <div className={styles.root}>
+                <Header
+                    sideBar={sideBarOpen}
+                    sideBarOpened={openSideBarHandler}
+                    sideBarWidth={sideBarWidth}
+                />
                 {routes}
-            </Fragment>
+            </div>
         </ThemeProvider>
     );
 };

@@ -21,8 +21,10 @@ import Paper from "@material-ui/core/Paper";
 import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import MenuIcon from "@material-ui/icons/Menu";
+import clsx from "clsx";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         alignItems: "center",
     },
@@ -35,16 +37,40 @@ const useStyles = makeStyles({
     snackBar: {
         "& > *": {
             backgroundColor: "#2c3e50",
-            color: "#fff"
-        }
+            color: "#fff",
+        },
     },
     successIcon: {
         fill: "#4caf50",
     },
-});
+    menuButton: {
+        marginRight: 18,
+    },
+    hide: {
+        display: "none",
+    },
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+        transition: theme.transitions.create(["width", "margin"], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        height: 64
+    },
+    appBarShift: (props) => ({
+        marginLeft: props.sideBarWidth,
+        width: `calc(100% - ${props.sideBarWidth}px)`,
+        transition: theme.transitions.create(["width", "margin"], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }),
+}));
 
 const Header = (props) => {
-    const styles = useStyles();
+    const styles = useStyles(props);
+
+    const { sideBar, sideBarOpened } = props;
     const [snackBarVisible, setSnackBarVisible] = useState(false);
 
     // Redux state
@@ -65,14 +91,13 @@ const Header = (props) => {
     const closeSnackBar = () => setSnackBarVisible(false);
 
     const saveDataHandler = () => {
-        axios.put(`${databaseUrl}/users.json?auth=${userInfo.token}`, {
+        axios
+            .put(`${databaseUrl}/users.json?auth=${userInfo.token}`, {
                 [userInfo.userId]: {
                     ...videosInfo,
                 },
             })
             .then((response) => {
-                console.log(response);
-
                 openSnackBar();
             })
             .catch((error) => {
@@ -85,6 +110,8 @@ const Header = (props) => {
             Login
         </Button>
     );
+
+    let menuButton = null;
 
     if (isAuthenticated) {
         buttons = (
@@ -104,7 +131,7 @@ const Header = (props) => {
                         open={snackBarVisible}
                         autoHideDuration={2500}
                         classes={{
-                            root: styles.snackBar
+                            root: styles.snackBar,
                         }}
                         onClose={closeSnackBar}
                         message="Data saved successfully"
@@ -119,10 +146,25 @@ const Header = (props) => {
         );
     }
 
+    if (sideBar !== null) {
+        menuButton = (
+            <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={sideBarOpened}
+                edge="start"
+                className={clsx(styles.menuButton, { [styles.hide]: sideBar })}
+            >
+                <MenuIcon />
+            </IconButton>
+        );
+    }
+
     return (
-        <AppBar position="static">
+        <AppBar position="static" className={clsx(styles.appBar, { [styles.appBarShift]: sideBar })}>
             <Paper square>
                 <Toolbar className={styles.root}>
+                    {menuButton}
                     <Typography variant="h6" className={styles.title}>
                         MyTube
                     </Typography>
