@@ -7,6 +7,7 @@ const initialState = {
     collections: null,
     loading: false,
     error: null,
+    selectedVideo: null
 };
 
 /**
@@ -137,7 +138,7 @@ const deleteCollection = (state, id) => {
         }
 
         return collectionsObj;
-    });
+    }, {});
 
     return {
         ...state,
@@ -169,6 +170,8 @@ const reducer = (state = initialState, action) => {
             return addVideoToCollection(state, action.videoId, action.videoTitle, "custom", action.collectionId);
         case actions.VIDEOS_COLLECTION_DELETE:
             return removeVideoFromCollection(state, action.videoId, "custom", action.collectionId);
+        case actions.VIDEOS_ADD_SELECTED_VIDEO:
+            return { ...state, selectedVideo: action.videoTitle }
         default:
             return state;
     }
