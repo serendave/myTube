@@ -11,6 +11,7 @@ import Collection from "../Collection/Collection";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import image from "../../images/homepage-bg-2.jpg";
+import SelectedVideo from "../../components/Video/SelectedVideo/SelectedVideo";
 const useStyles = makeStyles({
     page: {
         minHeight: "inherit",
@@ -23,7 +24,7 @@ const useStyles = makeStyles({
     },
     heightFix: {
         minHeight: "inherit",
-    }
+    },
 });
 
 const Mainpage = (props) => {
@@ -62,8 +63,10 @@ const Mainpage = (props) => {
                         />
                         <Route
                             path="/videos/:id"
+                            exact
                             render={(props) => <Collection {...props} type="custom" />}
                         />
+                        <Route path="/videos/selected-video/:videoId" component={SelectedVideo} />
                     </Switch>
                 </Grid>
                 <Grid item xs={1}></Grid>

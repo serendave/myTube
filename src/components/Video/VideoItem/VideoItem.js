@@ -11,16 +11,18 @@ import AddIcon from "@material-ui/icons/Add";
 // Redux
 import * as actions from "../../../store/actions/actionCreators/videos";
 import { useDispatch, useSelector } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
+    root: props => ({
         padding: theme.spacing(2),
         backgroundColor: "#2c3e50",
-    },
-    videobox: {
+        flex: props.fullHeight ? 1 : "initial"
+    }),
+    videobox: props => ({
         width: "100%",
-        height: 200,
-    },
+        height: props.videoHeight ?? 200,
+    }),
     videotitle: {
         padding: `${theme.spacing(1)}px 2px`,
     },
@@ -36,10 +38,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const AddVideoMenu = React.lazy(() => import("../../AddElement/AddVideo/AddVideo"));
+const AddVideoMenu = React.lazy(() => import("../AddVideo/AddVideo"));
 
 const VideoItem = React.memo((props) => {
-    const styles = useStyles();
+    const styles = useStyles(props);
     const [anchorEl, setAnchorEl] = useState(false);
 
     const { videoId, title } = props;
@@ -61,6 +63,7 @@ const VideoItem = React.memo((props) => {
     const onFavoritesRemove = () => dispatch(actions.favoritesRemove(videoId));
     const onLikedAdd = () => dispatch(actions.likedAdd(videoId, title));
     const onLikedRemove = () => dispatch(actions.likedRemove(videoId));
+    const onVideoSelect = (videoTitle) => dispatch(actions.selectVideo(videoTitle)); 
 
     const openMenuHandler = (event) => {
         setAnchorEl(event.currentTarget);
@@ -68,6 +71,11 @@ const VideoItem = React.memo((props) => {
 
     const closeMenuHandler = () => {
         setAnchorEl(null);
+    };
+
+    const fullScreenClickedHandler = () => {
+        props.history.push("/videos/selected-video/" + videoId);
+        onVideoSelect(title);
     };
 
     let addVideoButton = (
@@ -143,7 +151,7 @@ const VideoItem = React.memo((props) => {
                 {favoriteButton}
                 {addVideoButton}
                 {menu}
-                <IconButton size="small">
+                <IconButton size="small" onClick={fullScreenClickedHandler}>
                     <FullscreenIcon />
                 </IconButton>
             </CardActions>
@@ -151,4 +159,4 @@ const VideoItem = React.memo((props) => {
     );
 });
 
-export default VideoItem;
+export default withRouter(VideoItem);

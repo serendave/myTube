@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import * as actions from "../../../store/actions/actionCreators/videos";
 
 import Menu from "@material-ui/core/Menu";
-import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
 import { InputBase, Button, makeStyles, Typography, ListItemIcon, ListItem, ListItemText } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";

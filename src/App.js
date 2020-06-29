@@ -39,8 +39,7 @@ const App = () => {
 
     useEffect(() => {
         onTryAutoLogin();
-        console.log(sideBarOpen);
-    }, [onTryAutoLogin, sideBarOpen]);
+    }, [onTryAutoLogin]);
 
     let routes = (
         <Fragment>

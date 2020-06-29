@@ -146,7 +146,7 @@ const Header = (props) => {
         );
     }
 
-    if (sideBar !== null) {
+    if (sideBar !== null && isAuthenticated) {
         menuButton = (
             <IconButton
                 color="inherit"
