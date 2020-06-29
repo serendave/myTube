@@ -1,9 +1,13 @@
 import React, { Fragment } from "react";
-import { Paper, makeStyles, Typography, Divider } from "@material-ui/core";
+
+import { Paper, Typography, Divider } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import Pagination from "@material-ui/lab/Pagination";
+
 import VideoItem from "../VideoItem/VideoItem";
 import Spinner from "../../UI/Spinner/Spinner";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         padding: 15,
         minHeight: (props) => props.minHeight ?? 350,
@@ -29,7 +33,14 @@ const useStyles = makeStyles({
     heading: {
         textTransform: "capitalize",
     },
-});
+    pagination: {
+        "& > *": {
+            margin: "0 auto",
+            marginTop: theme.spacing(4),
+            width: "fit-content",
+        },
+    },
+}));
 
 const VideoContainer = (props) => {
     const { videos, loading, videosType, collectionType, collectionTitle } = props;
@@ -37,10 +48,24 @@ const VideoContainer = (props) => {
 
     let message = null;
     let heading = null;
+    let pages = null;
 
     if (videosType === "search") {
         message = "Type something in the search bar to see the results";
         heading = <Typography variant="h4">Search Results</Typography>;
+        pages = (
+            <div className={styles.pagination}>
+                <Pagination
+                    count={10}
+                    color="primary"
+                    size="large"
+                    page={props.page}
+                    onChange={(e, value) => {
+                        props.pageChanged(value);
+                    }}
+                />
+            </div>
+        );
     } else if (videosType === "collection") {
         message = "There is no videos in the collection yet";
     }
@@ -83,6 +108,7 @@ const VideoContainer = (props) => {
                         return <VideoItem videoId={video.id} title={video.title} key={video.id} />;
                     })}
                 </div>
+                {pages}
             </Fragment>
         );
     }

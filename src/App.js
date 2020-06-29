@@ -39,7 +39,6 @@ const App = () => {
 
     useEffect(() => {
         onTryAutoLogin();
-        console.log(sideBarOpen);
     }, [onTryAutoLogin, sideBarOpen]);
 
     let routes = (
