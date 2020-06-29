@@ -1,12 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-
-// Material UI
-import { Paper, Divider, Drawer, List, CssBaseline } from "@material-ui/core";
-import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
-import AddCollection from "../AddElement/AddCollection/AddCollection";
 import { useSelector } from "react-redux";
 import clsx from "clsx";
+
+// Material UI
+import { Divider, Drawer, List, CssBaseline, ListItemSecondaryAction } from "@material-ui/core";
+import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
+import AddCollection from "../Collection/AddCollection/AddCollection";
 
 // Material UI icons
 import IconButton from "@material-ui/core/IconButton";
@@ -19,6 +19,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import DeleteCollection from "../Collection/DeleteCollection/DeleteCollection";
 
 const useStyles = makeStyles((theme) => ({
     sideBar: (props) => ({
@@ -27,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
         whiteSpace: "nowrap",
         minHeight: "inherit",
         height: 1,
+        "& .MuiListItemSecondaryAction-root": {
+            opacity: 0,
+            visibility: "hidden",
+        },
     }),
     sideBarOpen: (props) => ({
         width: props.sideBarWidth,
@@ -69,6 +74,19 @@ const useStyles = makeStyles((theme) => ({
     listItemIcon: {
         minWidth: 46,
     },
+    listItemSecondary: {
+        right: 8,
+        transition: "all .3s",
+        "& svg": {
+            fontSize: "1.2rem",
+        },
+    },
+    listItem: {
+        "&:hover .MuiListItemSecondaryAction-root": {
+            opacity: 1,
+            visibility: "visible",
+        },
+    },
 }));
 
 const CustomListItemIcon = withStyles({
@@ -94,17 +112,20 @@ const Sidebar = (props) => {
         const link = `/videos/${collection.id}`;
 
         let name = collection.name;
-        if (collection.name.length > 10) {
-            name = collection.name.substr(0, 9) + "...";
+        if (collection.name.length >= 8) {
+            name = collection.name.substr(0, 7) + "...";
         }
 
         return (
-            <NavLink to={link} key={collection.id}>
+            <NavLink to={link} key={collection.id} className={clsx({ [styles.listItem]: open })}>
                 <ListItem button>
                     <CustomListItemIcon>
                         <FolderIcon />
                     </CustomListItemIcon>
                     <ListItemText primary={name} />
+                    <ListItemSecondaryAction className={styles.listItemSecondary}>
+                        <DeleteCollection collectionId={collection.id} />
+                    </ListItemSecondaryAction>
                 </ListItem>
             </NavLink>
         );
@@ -138,7 +159,7 @@ const Sidebar = (props) => {
             <List>
                 <NavLink to="/videos/search">
                     <ListItem button>
-                        <CustomListItemIcon classes={{ root: styles.CustomListItemIcon }}>
+                        <CustomListItemIcon>
                             <SearchIcon />
                         </CustomListItemIcon>
                         <ListItemText primary="Search" />
