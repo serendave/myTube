@@ -15,7 +15,7 @@ export const authSuccess = (token, userId, userEmail) => ({
 
 export const authFail = (error) => ({
     type: actions.AUTH_FAIL,
-    error,
+    error
 });
 
 export const logOut = () => {
@@ -27,31 +27,34 @@ export const logOut = () => {
     };
 };
 
+export const clearError = () => ({
+    type: actions.AUTH_CLEAR_ERROR,
+});
+
 export const authenticate = (email, password, isSignedUp) => {
-    return async (dispatch) => {
+    return (dispatch) => {
         dispatch(authStart());
 
-        try {
-            let url = isSignedUp ? signInUrl : signUpUrl;
-            const authData = {
-                email,
-                password,
-                returnSecureToken: true,
-            };
+        let url = isSignedUp ? signInUrl : signUpUrl;
+        const authData = {
+            email,
+            password,
+            returnSecureToken: true,
+        };
 
-            const response = await axios.post(url, authData);
+        axios.post(url, authData)
+            .then((response) => {
+                const token = response.data.idToken;
+                const userId = response.data.localId;
 
-            const token = response.data.idToken;
-            const userId = response.data.localId;
+                localStorage.setItem("token", token);
+                localStorage.setItem("userId", userId);
 
-            localStorage.setItem("token", token);
-            localStorage.setItem("userId", userId);
-
-            dispatch(authSuccess(token, userId, email));
-        } catch (error) {
-            console.log(error.message);
-            dispatch(authFail());
-        }
+                dispatch(authSuccess(token, userId, email));
+            })
+            .catch((error) => {
+                dispatch(authFail(error.response.data.error.message));
+            });
     };
 };
 

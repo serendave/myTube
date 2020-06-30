@@ -1,5 +1,7 @@
 import React, { Fragment, useState } from "react";
 
+import Modal from "../../components/UI/Modal/Modal";
+
 // React Router
 import { NavLink } from "react-router-dom";
 
@@ -72,6 +74,7 @@ const Header = (props) => {
 
     const { sideBar, sideBarOpened } = props;
     const [snackBarVisible, setSnackBarVisible] = useState(false);
+    const [error, setError] = useState(null);
 
     // Redux state
     const userInfo = useSelector((state) => state.auth);
@@ -90,9 +93,12 @@ const Header = (props) => {
     const openSnackBar = () => setSnackBarVisible(true);
     const closeSnackBar = () => setSnackBarVisible(false);
 
+    const clearErrorHandler = () => {
+        setError(null);
+    }
+    
     const saveDataHandler = () => {
-        axios
-            .put(`${databaseUrl}/users.json?auth=${userInfo.token}`, {
+        axios.put(`${databaseUrl}/users.json?auth=${userInfo.token}`, {
                 [userInfo.userId]: {
                     ...videosInfo,
                 },
@@ -101,7 +107,8 @@ const Header = (props) => {
                 openSnackBar();
             })
             .catch((error) => {
-                console.log(error);
+                console.log(error.response);
+                setError(error.response.data.error);
             });
     };
 
@@ -176,6 +183,12 @@ const Header = (props) => {
                     {buttons}
                 </Toolbar>
             </Paper>
+            <Modal
+                title="Opps. Something went wrong during saving collections"
+                message={error}
+                open={Boolean(error)}
+                closed={clearErrorHandler}
+            />
         </AppBar>
     );
 };

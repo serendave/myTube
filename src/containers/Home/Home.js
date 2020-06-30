@@ -1,6 +1,7 @@
-import React, { useState, useReducer, useEffect, useCallback } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import Searchbar from "../../components/Searchbar/Searchbar";
 import VideoContainer from "../../components/Video/VideoContainer/VideoContainer";
+import Modal from "../../components/UI/Modal/Modal";
 
 // http
 import axios from "axios";
@@ -26,8 +27,8 @@ const filtersReducer = (filters, action) => {
         case "SET_MAX_RESULTS":
             return {
                 ...filters,
-                maxResults: parseInt(action.maxResults)
-            }
+                maxResults: parseInt(action.maxResults),
+            };
         default:
             return filters;
     }
@@ -39,6 +40,7 @@ const Home = () => {
 
     const [videos, setVideos] = useState([]);
     const [videosLoading, setVideosLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const [prevPage, setPrevPage] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -50,9 +52,10 @@ const Home = () => {
         order: "relevance",
         duration: "any",
         quality: "any",
-        maxResults: 6
+        maxResults: 6,
     });
 
+    // Redux
     const clearSearchHandler = () => setSearchQuery("");
     const setOrderHandler = (order) => dispatch({ type: "SET_ORDER", order });
     const setDurationHandler = (duration) => dispatch({ type: "SET_DURATION", duration });
@@ -93,13 +96,12 @@ const Home = () => {
 
         const searchParams = {
             q: searchQuery,
-            maxResults: 9,
             videoEmbeddable: true,
             type: "video",
             order: filters.order,
             duration: filters.duration,
             quality: filters.quality,
-            maxResults: filters.maxResults
+            maxResults: filters.maxResults,
         };
 
         if (currentPageToken) {
@@ -124,10 +126,16 @@ const Home = () => {
                 finishSearchHandler(formattedVideos, prevPageToken, nextPageToken);
             })
             .catch((error) => {
-                console.log(error);
+                console.log(error.response);
+                setError(error.response.data.error.message);
             });
     };
 
+    const clearErrorHandler = () => {
+        setError(null);
+        setVideosLoading(false);
+    }
+    
     return (
         <div>
             <Searchbar
@@ -150,6 +158,12 @@ const Home = () => {
                 videosType="search"
                 pageChanged={changePageHandler}
                 page={currentPage}
+            />
+            <Modal
+                title="Opps. Something went wrong during loading videos"
+                message={error}
+                open={Boolean(error)}
+                closed={clearErrorHandler}
             />
         </div>
     );

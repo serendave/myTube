@@ -8,6 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import image from "../../images/login-bg-1.jpg";
 import LoginForm from "../../components/LoginForm/LoginForm";
+import Modal from "../../components/UI/Modal/Modal";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -33,6 +34,7 @@ const Login = (props) => {
     // Redux
     const isAuthenticated = useSelector((state) => state.auth.token !== null);
     const loading = useSelector((state) => state.auth.loading);
+    const error = useSelector((state) => state.auth.error);
     const dispatch = useDispatch();
 
     // Props
@@ -40,12 +42,13 @@ const Login = (props) => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            history.push("/videos/search");
+            props.history.push("/videos/search");
         }
     }, [history, isAuthenticated]);
 
     const onAuth = (email, password, isSignedUp) =>
         dispatch(action.authenticate(email, password, isSignedUp));
+    const onClearError = () => dispatch(action.clearError());
 
     const toggleAuthStateHandler = () => {
         authState === "login" ? setAuthState("register") : setAuthState("login");
@@ -55,6 +58,10 @@ const Login = (props) => {
         onAuth(email, password, authState === "login");
     };
 
+    const clearErrorHandler = () => {
+        onClearError();
+    }
+    
     return (
         <div className={styles.page}>
             <div className={styles.content}>
@@ -75,6 +82,12 @@ const Login = (props) => {
                     <Grid item xs={3} md={4}></Grid>
                 </Grid>
             </div>
+            <Modal
+                title="Opps. Something went wrong during authentication"
+                message={error}
+                open={Boolean(error)}
+                closed={clearErrorHandler}
+            />
         </div>
     );
 };
