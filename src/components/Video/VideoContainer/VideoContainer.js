@@ -56,12 +56,16 @@ const VideoContainer = (props) => {
         pages = (
             <div className={styles.pagination}>
                 <Pagination
-                    count={10}
+                    count={5}
                     color="primary"
                     size="large"
                     page={props.page}
                     onChange={(e, value) => {
-                        props.pageChanged(value);
+                        const nextButton = e.target.closest('button[aria-label="Go to next page"]');
+                        const prevButton = e.target.closest('button[aria-label="Go to previous page"]');
+                        if (prevButton || nextButton) {
+                            props.pageChanged(value);
+                        }
                     }}
                 />
             </div>

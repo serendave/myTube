@@ -61,6 +61,8 @@ const Searchbar = React.memo((props) => {
                     durationChanged={props.durationChanged}
                     quality={props.quality}
                     qualityChanged={props.qualityChanged}
+                    maxResults={props.maxResults}
+                    maxResultsChanged={props.maxResultsChanged}
                 />
             </div>
             <Divider className={styles.divider} orientation="vertical" />

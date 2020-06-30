@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect } from "react";
+import React, { useState, useReducer, useEffect, useCallback } from "react";
 import Searchbar from "../../components/Searchbar/Searchbar";
 import VideoContainer from "../../components/Video/VideoContainer/VideoContainer";
 
@@ -23,6 +23,11 @@ const filtersReducer = (filters, action) => {
                 ...filters,
                 quality: action.quality,
             };
+        case "SET_MAX_RESULTS":
+            return {
+                ...filters,
+                maxResults: parseInt(action.maxResults)
+            }
         default:
             return filters;
     }
@@ -40,31 +45,29 @@ const Home = () => {
     const [prevPageToken, setPrevPageToken] = useState(null);
     const [nextPageToken, setNextPageToken] = useState(null);
 
-    useEffect(() => {
-        if (currentPage && prevPage) {
-            if (currentPage > prevPage) {
-                searchVideosHandler(nextPageToken)
-            } else if (currentPage < prevPage) {
-                searchVideosHandler(prevPageToken);
-            }
-        }
-        // console.log(currentPage, "current");
-        // console.log(prevPage, "prev");
-        // console.log(prevPageToken, "prevToken");
-        // console.log(nextPageToken, "nextToken");
-    }, [currentPage, prevPage]);
-
     // useReducer
     const [filters, dispatch] = useReducer(filtersReducer, {
         order: "relevance",
         duration: "any",
         quality: "any",
+        maxResults: 6
     });
 
     const clearSearchHandler = () => setSearchQuery("");
     const setOrderHandler = (order) => dispatch({ type: "SET_ORDER", order });
     const setDurationHandler = (duration) => dispatch({ type: "SET_DURATION", duration });
     const setQualityHandler = (quality) => dispatch({ type: "SET_QUALITY", quality });
+    const setMaxResultsHandler = (maxResults) => dispatch({ type: "SET_MAX_RESULTS", maxResults });
+
+    useEffect(() => {
+        if (currentPage && prevPage) {
+            if (currentPage > prevPage) {
+                searchVideosHandler(nextPageToken);
+            } else if (currentPage < prevPage) {
+                searchVideosHandler(prevPageToken);
+            }
+        }
+    }, [currentPage, prevPage]);
 
     const startSearchHandler = () => {
         setVideosLoading(true);
@@ -88,8 +91,6 @@ const Home = () => {
     const searchVideosHandler = (currentPageToken) => {
         startSearchHandler();
 
-        console.log("Search videos Handler");
-
         const searchParams = {
             q: searchQuery,
             maxResults: 9,
@@ -98,6 +99,7 @@ const Home = () => {
             order: filters.order,
             duration: filters.duration,
             quality: filters.quality,
+            maxResults: filters.maxResults
         };
 
         if (currentPageToken) {
@@ -108,8 +110,6 @@ const Home = () => {
             .then((response) => {
                 const videosArray = response.data.items;
                 const formattedVideos = [];
-
-                // console.log(response.data);
 
                 const prevPageToken = response.data.prevPageToken;
                 const nextPageToken = response.data.nextPageToken;
@@ -141,6 +141,8 @@ const Home = () => {
                 durationChanged={setDurationHandler}
                 quality={filters.quality}
                 qualityChanged={setQualityHandler}
+                maxResults={filters.maxResults}
+                maxResultsChanged={setMaxResultsHandler}
             />
             <VideoContainer
                 videos={videos}
