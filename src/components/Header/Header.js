@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 
 import Modal from "../../components/UI/Modal/Modal";
+import Snackbar from "../../components/UI/Snackbar/Snackbar";
 
 // React Router
 import { NavLink } from "react-router-dom";
@@ -20,11 +21,10 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
+import { useMediaQuery } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -36,29 +36,20 @@ const useStyles = makeStyles((theme) => ({
     headerElement: {
         marginRight: 10,
     },
-    snackBar: {
-        "& > *": {
-            backgroundColor: "#2c3e50",
-            color: "#fff",
-        },
-    },
-    successIcon: {
-        fill: "#4caf50",
-    },
-    menuButton: {
-        marginRight: 18,
-    },
+    menuButton: (props) => ({
+        marginRight: props.smallScreen ? 0 : 18,
+    }),
     hide: {
         display: "none",
     },
-    appBar: {
+    appBar: (props) => ({
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(["width", "margin"], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        height: 64
-    },
+        height: props.smallScreen ? 56 : 64,
+    }),
     appBarShift: (props) => ({
         marginLeft: props.sideBarWidth,
         width: `calc(100% - ${props.sideBarWidth}px)`,
@@ -67,12 +58,18 @@ const useStyles = makeStyles((theme) => ({
             duration: theme.transitions.duration.enteringScreen,
         }),
     }),
+    toolBarPadding: {
+        [theme.breakpoints.down("sm")]: {
+            padding: "0 8px"
+        }
+    }
 }));
 
 const Header = (props) => {
     const styles = useStyles(props);
+    const phoneScreen = useMediaQuery("(max-width: 500px)");
 
-    const { sideBar, sideBarOpened } = props;
+    const { sideBar, sideBarToggled, smallScreen } = props;
     const [snackBarVisible, setSnackBarVisible] = useState(false);
     const [error, setError] = useState(null);
 
@@ -95,8 +92,8 @@ const Header = (props) => {
 
     const clearErrorHandler = () => {
         setError(null);
-    }
-    
+    };
+
     const saveDataHandler = () => {
         axios.put(`${databaseUrl}/users.json?auth=${userInfo.token}`, {
                 [userInfo.userId]: {
@@ -123,32 +120,24 @@ const Header = (props) => {
     if (isAuthenticated) {
         buttons = (
             <Fragment>
-                <Button onClick={saveDataHandler} className={styles.headerElement} variant="outlined">
+                <Button
+                    onClick={saveDataHandler}
+                    className={styles.headerElement}
+                    variant="outlined"
+                    size={phoneScreen ? "small" : "medium"}
+                >
                     Save Data
                 </Button>
-                <Button onClick={logOutHandler} variant="outlined" component={NavLink} to="/login">
+                <Button
+                    onClick={logOutHandler}
+                    variant="outlined"
+                    component={NavLink}
+                    to="/login"
+                    size={phoneScreen ? "small" : "medium"}
+                >
                     Logout
                 </Button>
-                <Paper>
-                    <Snackbar
-                        anchorOrigin={{
-                            vertical: "bottom",
-                            horizontal: "right",
-                        }}
-                        open={snackBarVisible}
-                        autoHideDuration={2500}
-                        classes={{
-                            root: styles.snackBar,
-                        }}
-                        onClose={closeSnackBar}
-                        message="Data saved successfully"
-                        action={
-                            <IconButton size="small" color="inherit">
-                                <CheckCircleIcon fontSize="small" className={styles.successIcon} />
-                            </IconButton>
-                        }
-                    />
-                </Paper>
+                <Snackbar visible={snackBarVisible} closed={closeSnackBar} message="Data saved successfully" />
             </Fragment>
         );
     }
@@ -158,9 +147,9 @@ const Header = (props) => {
             <IconButton
                 color="inherit"
                 aria-label="open drawer"
-                onClick={sideBarOpened}
+                onClick={sideBarToggled}
                 edge="start"
-                className={clsx(styles.menuButton, { [styles.hide]: sideBar })}
+                className={clsx(styles.menuButton, { [styles.hide]: sideBar && !smallScreen })}
             >
                 <MenuIcon />
             </IconButton>
@@ -168,14 +157,17 @@ const Header = (props) => {
     }
 
     return (
-        <AppBar position="static" className={clsx(styles.appBar, { [styles.appBarShift]: sideBar })}>
+        <AppBar
+            position="static"
+            className={clsx(styles.appBar, { [styles.appBarShift]: sideBar && !smallScreen })}
+        >
             <Paper square>
-                <Toolbar className={styles.root}>
+                <Toolbar className={clsx(styles.root, styles.toolBarPadding)}>
                     {menuButton}
                     <Typography variant="h6" className={styles.title}>
                         MyTube
                     </Typography>
-                    {isAuthenticated ? (
+                    {isAuthenticated && !smallScreen ? (
                         <Typography variant="button" className={styles.headerElement}>
                             Welcome, {userEmail}!
                         </Typography>

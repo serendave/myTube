@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
     menuSection: {
         padding: theme.spacing(2),
         flex: 1,
+        [theme.breakpoints.down("sm")]: {
+            padding: theme.spacing(1)
+        }
     },
     closeIcon: {
         position: "absolute",
@@ -34,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: 25
     },
     resultsTitle: {
-        fontSize: "1.1em"
+        fontSize: 15
     },
     spacing: {
         flexGrow: 1

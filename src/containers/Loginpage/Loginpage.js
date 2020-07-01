@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as action from "../../store/actions/actionCreators/auth";
 
-import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import image from "../../images/login-bg-1.jpg";
@@ -20,7 +19,12 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         height: "calc(100% - 64px)",
-    }
+        margin: "0 auto",
+        width: "90%",
+        [theme.breakpoints.up("sm")]: {
+            width: 500
+        },
+    },
 }));
 
 const Login = (props) => {
@@ -37,14 +41,11 @@ const Login = (props) => {
     const error = useSelector((state) => state.auth.error);
     const dispatch = useDispatch();
 
-    // Props
-    const { history } = props;
-
     useEffect(() => {
         if (isAuthenticated) {
             props.history.push("/videos/search");
         }
-    }, [history, isAuthenticated]);
+    }, [props.history, isAuthenticated]);
 
     const onAuth = (email, password, isSignedUp) =>
         dispatch(action.authenticate(email, password, isSignedUp));
@@ -60,27 +61,21 @@ const Login = (props) => {
 
     const clearErrorHandler = () => {
         onClearError();
-    }
-    
+    };
+
     return (
         <div className={styles.page}>
             <div className={styles.content}>
-                <Grid container>
-                    <Grid item xs={3} md={4}></Grid>
-                    <Grid item xs={6} md={4}>
-                        <LoginForm
-                            email={email}
-                            password={password}
-                            authState={authState} 
-                            passwordChanged={setPassword} 
-                            emailChanged={setEmail} 
-                            authStateToggled={toggleAuthStateHandler}
-                            authenticated={authHandler}
-                            loading={loading}
-                        />
-                    </Grid>
-                    <Grid item xs={3} md={4}></Grid>
-                </Grid>
+                <LoginForm
+                    email={email}
+                    password={password}
+                    authState={authState}
+                    passwordChanged={setPassword}
+                    emailChanged={setEmail}
+                    authStateToggled={toggleAuthStateHandler}
+                    authenticated={authHandler}
+                    loading={loading}
+                />
             </div>
             <Modal
                 title="Opps. Something went wrong during authentication"

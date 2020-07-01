@@ -4,17 +4,20 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import VideoContainer from "../../components/Video/VideoContainer/VideoContainer";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
-        padding: 25
+        padding: 25,
+        [theme.breakpoints.down("sm")]: {
+            padding: 10,
+        },
     },
-});
+}));
 
 const Collection = (props) => {
     const { type } = props;
-    const styles = useStyles();
+    const styles = useStyles(props);
     let collectionTitle = null;
 
     const formatVideos = (collection, resultArray) => {
@@ -38,8 +41,8 @@ const Collection = (props) => {
                 break;
             case "custom":
                 const collectionId = props.match.params.id;
-                const collection = state.videos.collections[collectionId]; 
-                collectionTitle = collection.name; 
+                const collection = state.videos.collections[collectionId];
+                collectionTitle = collection.name;
 
                 formatVideos(collection.videos, formattedVideos);
                 break;

@@ -96,7 +96,7 @@ const removeVideoFromCollection = (state, videoId, collectionType, collectionId)
             };
             break;
         case "custom":
-            filteredCollection = filteredCollection(state.collections[collectionId].videos, videoId);
+            filteredCollection = filterCollection(state.collections[collectionId].videos, videoId);
 
             newState = {
                 ...state,
@@ -168,7 +168,7 @@ const reducer = (state = initialState, action) => {
             return deleteCollection(state, action.collectionId);
         case actions.VIDEOS_COLLECTION_ADD:
             return addVideoToCollection(state, action.videoId, action.videoTitle, "custom", action.collectionId);
-        case actions.VIDEOS_COLLECTION_DELETE:
+        case actions.VIDEOS_COLLECTION_REMOVE:
             return removeVideoFromCollection(state, action.videoId, "custom", action.collectionId);
         case actions.VIDEOS_ADD_SELECTED_VIDEO:
             return { ...state, selectedVideo: action.videoTitle }

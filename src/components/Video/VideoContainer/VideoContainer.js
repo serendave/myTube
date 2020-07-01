@@ -17,9 +17,11 @@ const useStyles = makeStyles((theme) => ({
     },
     videosContainer: {
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
         alignItems: "start",
         gridGap: 15,
+        [theme.breakpoints.up("sm")]: {
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+        }
     },
     message: {
         position: "absolute",

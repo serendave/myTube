@@ -40,6 +40,7 @@ const Modal = (props) => {
                 break;
             case (message.indexOf("invalid combination of search filters") !== -1):
                 messageDisplay = "There is some error in video filters. Please, try again later";
+                break;
             default:
                 break;
         }

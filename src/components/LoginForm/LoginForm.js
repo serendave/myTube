@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Typography, TextField, Button, Paper } from "@material-ui/core";
+import { Typography, TextField, Button, Paper, useMediaQuery } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import classNames from "classnames";
 import Spinner from "../UI/Spinner/Spinner";
@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 const LoginForm = (props) => {
     const styles = useStyles();
+    const phoneScreen = useMediaQuery("(max-width: 500px)");
     const { passwordChanged, emailChanged, authStateToggled, authenticated } = props;
 
     let formContent = (
@@ -66,10 +67,20 @@ const LoginForm = (props) => {
                 onChange={(e) => passwordChanged(e.target.value)}
             />
             <div className={classNames(styles.buttonBox, styles.controls, styles.root)}>
-                <Button variant="contained" color="primary" onClick={authStateToggled}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={authStateToggled}
+                    size={phoneScreen ? "small" : "medium"}
+                >
                     {props.authState === "login" ? "Register" : "Login"}
                 </Button>
-                <Button variant="contained" color="primary" onClick={authenticated}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={authenticated}
+                    size={phoneScreen ? "small" : "medium"}
+                >
                     {props.authState === "login" ? "Sign in" : "Sign up"}
                 </Button>
             </div>

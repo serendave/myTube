@@ -1,12 +1,12 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import clsx from "clsx";
+import AddCollection from "../Collection/AddCollection/AddCollection";
 
 // Material UI
 import { Divider, Drawer, List, CssBaseline, ListItemSecondaryAction } from "@material-ui/core";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
-import AddCollection from "../Collection/AddCollection/AddCollection";
 
 // Material UI icons
 import IconButton from "@material-ui/core/IconButton";
@@ -47,9 +47,6 @@ const useStyles = makeStyles((theme) => ({
         }),
         overflowX: "hidden",
         width: theme.spacing(8) + 1,
-        // [theme.breakpoints.up("sm")]: {
-        //     width: theme.spacing(9) + 1,
-        // },
     },
     paper: {
         position: "static",
@@ -99,7 +96,7 @@ const Sidebar = (props) => {
     const styles = useStyles(props);
     const theme = useTheme();
 
-    const { open, sideBarClosed } = props;
+    const { open, sideBarClosed, smallScreen } = props;
 
     const customCollections = useSelector((state) => state.videos.collections);
 
@@ -131,30 +128,51 @@ const Sidebar = (props) => {
         );
     });
 
+    const largeScreenDrawer = clsx(styles.sideBar, {
+        [styles.sideBarOpen]: open,
+        [styles.sideBarClose]: !open,
+    });
+
+    const largeScreenDrawerPaper = clsx(styles.paper, {
+        [styles.sideBarOpen]: open,
+        [styles.sideBarClose]: !open,
+    });
+
+    const smallScreenDrawer = clsx(styles.sideBar, styles.sideBarOpen);
+    const smallScreenDrawerPaper = clsx(styles.paper, styles.sideBarOpen);
+
     return (
         <Drawer
-            variant="permanent"
-            className={clsx(styles.sideBar, {
-                [styles.sideBarOpen]: open,
-                [styles.sideBarClose]: !open,
-            })}
-            classes={{
-                paper: clsx(styles.paper, {
-                    [styles.sideBarOpen]: open,
-                    [styles.sideBarClose]: !open,
-                }),
-            }}
-            style={{
-                marginTop: -64,
-                height: "calc(100% + 64px)",
+            variant={smallScreen ? "temporary" : "permanent"}
+            className={smallScreen ? smallScreenDrawer : largeScreenDrawer}
+            classes={{ paper: smallScreen ? smallScreenDrawerPaper : largeScreenDrawerPaper }}
+            style={
+                smallScreen
+                    ? { height: "100%" }
+                    : {
+                          marginTop: -64,
+                          height: "calc(100% + 64px)",
+                      }
+            }
+            anchor="left"
+            open={smallScreen ? open : true}
+            onClose={sideBarClosed}
+            onClick={() => {
+                if (smallScreen) {
+                    sideBarClosed();
+                }
             }}
         >
-            <div className={styles.toolbar}>
-                <IconButton onClick={sideBarClosed}>
-                    {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                </IconButton>
-            </div>
-            <Divider />
+            {smallScreen ? null : (
+                <Fragment>
+                    <div className={styles.toolbar}>
+                        <IconButton onClick={sideBarClosed}>
+                            {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                        </IconButton>
+                    </div>
+                    <Divider />
+                </Fragment>
+            )}
             <CssBaseline />
             <List>
                 <NavLink to="/videos/search">

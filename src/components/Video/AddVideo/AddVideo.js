@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import Snackbar from "../../UI/Snackbar/Snackbar";
+
 import * as actions from "../../../store/actions/actionCreators/videos";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -33,6 +35,11 @@ const useStyles = makeStyles({
 const AddVideo = (props) => {
     const styles = useStyles();
     const { videoId, title, anchorEl, closeMenuHandler } = props;
+
+    const [snackBarVisible, setSnackBarVisible] = useState(false);
+
+    const openSnackBar = () => setSnackBarVisible(true);
+    const closeSnackBar = () => setSnackBarVisible(false);
 
     const [collections, setCollections] = useState(null);
     const stateCollections = useSelector((state) => state.videos.collections);
@@ -82,6 +89,7 @@ const AddVideo = (props) => {
                 onRemoveVideoFromCollection(collectionId, videoId);
             }
         }
+        openSnackBar();
     }
     
     let content = <Typography variant="subtitle1">There is no collections created yet</Typography>;
@@ -134,6 +142,7 @@ const AddVideo = (props) => {
             elevation={5}
         >
             {content}
+            <Snackbar visible={snackBarVisible} closed={closeSnackBar} message="Videos managed successfully" />
         </Menu>
     );
 };

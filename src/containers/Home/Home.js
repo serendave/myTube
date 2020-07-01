@@ -6,6 +6,7 @@ import Modal from "../../components/UI/Modal/Modal";
 // http
 import axios from "axios";
 import videosUrl from "../../config/videosAPI/videosAPI";
+import { makeStyles } from "@material-ui/core/styles";
 
 const filtersReducer = (filters, action) => {
     switch (action.type) {
@@ -34,7 +35,16 @@ const filtersReducer = (filters, action) => {
     }
 };
 
-const Home = () => {
+const useStyles = makeStyles({
+    root: {
+        width: "95%",
+        margin: "0 auto",
+    },
+});
+
+const Home = (props) => {
+    const styles = useStyles(props);
+
     // useState
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -134,10 +144,10 @@ const Home = () => {
     const clearErrorHandler = () => {
         setError(null);
         setVideosLoading(false);
-    }
-    
+    };
+
     return (
-        <div>
+        <div className={styles.root}>
             <Searchbar
                 searchValue={searchQuery}
                 searchValueChanged={setSearchQuery}
