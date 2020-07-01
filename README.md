@@ -1,5 +1,11 @@
-## MyTube App
+# MyTube App
 
 React Application, that works with YouTube Data API. 
-Allows searching youtube videos, liking videos, adding them to "Favorites", 
-and also create your own collections with videos.
+
+
+## Features
+
+- Searching youtube videos with defined filters 
+- Liking videos, adding them to "Favorites" 
+- Create and manage your own collections of videos.
+- Basic authentication with Firebase
