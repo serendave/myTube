@@ -74,31 +74,8 @@ export const authCheckState = () => {
 
                 dispatch(authSuccess(token, userId, email));
             } catch (error) {
-                console.log(error);
                 dispatch(logOut());
             }
         }
     };
 };
-
-/*
-
-export const authCheckState = () => {
-    return dispatch => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            dispatch(logOut());
-        } else {
-            const expirationDate = new Date(localStorage.getItem("expirationDate"));
-            if (expirationDate > new Date()) {
-                const userId = localStorage.getItem("userId");
-                dispatch(authSuccess(token, userId));
-                dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime())));
-            } else {
-                dispatch(logOut());
-            }
-        }
-    };
-};
-
-*/

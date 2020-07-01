@@ -136,7 +136,6 @@ const Home = (props) => {
                 finishSearchHandler(formattedVideos, prevPageToken, nextPageToken);
             })
             .catch((error) => {
-                console.log(error.response);
                 setError(error.response.data.error.message);
             });
     };

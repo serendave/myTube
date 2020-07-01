@@ -104,7 +104,6 @@ const Header = (props) => {
                 openSnackBar();
             })
             .catch((error) => {
-                console.log(error.response);
                 setError(error.response.data.error);
             });
     };

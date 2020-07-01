@@ -76,13 +76,9 @@ export const fetchCollections = (token, userId) => {
         // Fetching the results
         axios.get(url)
             .then((videos) => {
-                // console.log(videos);
-
                 dispatch(fetchCollecionsSuccess(videos.data));
             })
             .catch((error) => {
-                console.log(error);
-
                 dispatch(fetchCollecionsFail(error.message));
             });
     };

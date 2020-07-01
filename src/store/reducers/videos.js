@@ -10,32 +10,7 @@ const initialState = {
     selectedVideo: null
 };
 
-/**
- * STATE:
- *
- * favorites: {
- *     videoId: title
- *     videoId: title
- *     videoId: title
- * }
- *
- * liked: {
- *     videoId: title
- *     videoId: title
- *     videoId: title
- * }
- *
- * collections: {
- *     :collectionId: {
- *         name: collectionName,
- *         videos: {
- *             videoId: title
- *             videoId: title
- *         }
- *     }
- * }
- *
- */
+
 
 const filterCollection = (collection, id) => {
     return Object.keys(collection).reduce((object, videoId) => {
