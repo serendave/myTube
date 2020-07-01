@@ -1,20 +1,24 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 // Redux
 import { useSelector } from "react-redux";
 
 import VideoContainer from "../../components/Video/VideoContainer/VideoContainer";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         padding: 25,
+        [theme.breakpoints.down("sm")]: {
+            padding: 10,
+        },
     },
-});
+}));
 
 const Collection = (props) => {
     const { type } = props;
-    const styles = useStyles();
+    const styles = useStyles(props);
+    let collectionTitle = null;
 
     const formatVideos = (collection, resultArray) => {
         for (let videoId in collection) {
@@ -34,6 +38,14 @@ const Collection = (props) => {
                 break;
             case "liked":
                 formatVideos(state.videos.liked, formattedVideos);
+                break;
+            case "custom":
+                const collectionId = props.match.params.id;
+                const collection = state.videos.collections[collectionId];
+                collectionTitle = collection.name;
+
+                formatVideos(collection.videos, formattedVideos);
+                break;
             default:
                 break;
         }
@@ -43,7 +55,13 @@ const Collection = (props) => {
 
     return (
         <div className={styles.root}>
-            <VideoContainer videos={videos} videosType="collection" minHeight="500px" collectionType={type} />
+            <VideoContainer
+                videos={videos}
+                videosType="collection"
+                minHeight="500px"
+                collectionType={type}
+                collectionTitle={collectionTitle}
+            />
         </div>
     );
 };

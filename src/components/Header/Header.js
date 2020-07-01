@@ -1,5 +1,8 @@
 import React, { Fragment, useState } from "react";
 
+import Modal from "../../components/UI/Modal/Modal";
+import Snackbar from "../../components/UI/Snackbar/Snackbar";
+
 // React Router
 import { NavLink } from "react-router-dom";
 
@@ -18,11 +21,12 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import MenuIcon from "@material-ui/icons/Menu";
+import clsx from "clsx";
+import { useMediaQuery } from "@material-ui/core";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         alignItems: "center",
     },
@@ -32,20 +36,42 @@ const useStyles = makeStyles({
     headerElement: {
         marginRight: 10,
     },
-    snackBar: {
-        "& > *": {
-            backgroundColor: "#2c3e50",
-            color: "#fff"
+    menuButton: (props) => ({
+        marginRight: props.smallScreen ? 0 : 18,
+    }),
+    hide: {
+        display: "none",
+    },
+    appBar: (props) => ({
+        zIndex: theme.zIndex.drawer + 1,
+        transition: theme.transitions.create(["width", "margin"], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        height: props.smallScreen ? 56 : 64,
+    }),
+    appBarShift: (props) => ({
+        marginLeft: props.sideBarWidth,
+        width: `calc(100% - ${props.sideBarWidth}px)`,
+        transition: theme.transitions.create(["width", "margin"], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }),
+    toolBarPadding: {
+        [theme.breakpoints.down("sm")]: {
+            padding: "0 8px"
         }
-    },
-    successIcon: {
-        fill: "#4caf50",
-    },
-});
+    }
+}));
 
 const Header = (props) => {
-    const styles = useStyles();
+    const styles = useStyles(props);
+    const phoneScreen = useMediaQuery("(max-width: 500px)");
+
+    const { sideBar, sideBarToggled, smallScreen } = props;
     const [snackBarVisible, setSnackBarVisible] = useState(false);
+    const [error, setError] = useState(null);
 
     // Redux state
     const userInfo = useSelector((state) => state.auth);
@@ -64,6 +90,10 @@ const Header = (props) => {
     const openSnackBar = () => setSnackBarVisible(true);
     const closeSnackBar = () => setSnackBarVisible(false);
 
+    const clearErrorHandler = () => {
+        setError(null);
+    };
+
     const saveDataHandler = () => {
         axios.put(`${databaseUrl}/users.json?auth=${userInfo.token}`, {
                 [userInfo.userId]: {
@@ -71,12 +101,10 @@ const Header = (props) => {
                 },
             })
             .then((response) => {
-                console.log(response);
-
                 openSnackBar();
             })
             .catch((error) => {
-                console.log(error);
+                setError(error.response.data.error);
             });
     };
 
@@ -86,47 +114,59 @@ const Header = (props) => {
         </Button>
     );
 
+    let menuButton = null;
+
     if (isAuthenticated) {
         buttons = (
             <Fragment>
-                <Button onClick={saveDataHandler} className={styles.headerElement} variant="outlined">
+                <Button
+                    onClick={saveDataHandler}
+                    className={styles.headerElement}
+                    variant="outlined"
+                    size={phoneScreen ? "small" : "medium"}
+                >
                     Save Data
                 </Button>
-                <Button onClick={logOutHandler} variant="outlined" component={NavLink} to="/login">
+                <Button
+                    onClick={logOutHandler}
+                    variant="outlined"
+                    component={NavLink}
+                    to="/login"
+                    size={phoneScreen ? "small" : "medium"}
+                >
                     Logout
                 </Button>
-                <Paper>
-                    <Snackbar
-                        anchorOrigin={{
-                            vertical: "bottom",
-                            horizontal: "right",
-                        }}
-                        open={snackBarVisible}
-                        autoHideDuration={2500}
-                        classes={{
-                            root: styles.snackBar
-                        }}
-                        onClose={closeSnackBar}
-                        message="Data saved successfully"
-                        action={
-                            <IconButton size="small" color="inherit">
-                                <CheckCircleIcon fontSize="small" className={styles.successIcon} />
-                            </IconButton>
-                        }
-                    />
-                </Paper>
+                <Snackbar visible={snackBarVisible} closed={closeSnackBar} message="Data saved successfully" />
             </Fragment>
         );
     }
 
+    if (sideBar !== null && isAuthenticated) {
+        menuButton = (
+            <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={sideBarToggled}
+                edge="start"
+                className={clsx(styles.menuButton, { [styles.hide]: sideBar && !smallScreen })}
+            >
+                <MenuIcon />
+            </IconButton>
+        );
+    }
+
     return (
-        <AppBar position="static">
+        <AppBar
+            position="static"
+            className={clsx(styles.appBar, { [styles.appBarShift]: sideBar && !smallScreen })}
+        >
             <Paper square>
-                <Toolbar className={styles.root}>
+                <Toolbar className={clsx(styles.root, styles.toolBarPadding)}>
+                    {menuButton}
                     <Typography variant="h6" className={styles.title}>
                         MyTube
                     </Typography>
-                    {isAuthenticated ? (
+                    {isAuthenticated && !smallScreen ? (
                         <Typography variant="button" className={styles.headerElement}>
                             Welcome, {userEmail}!
                         </Typography>
@@ -134,6 +174,12 @@ const Header = (props) => {
                     {buttons}
                 </Toolbar>
             </Paper>
+            <Modal
+                title="Opps. Something went wrong during saving collections"
+                message={error}
+                open={Boolean(error)}
+                closed={clearErrorHandler}
+            />
         </AppBar>
     );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IconButton, Menu, Typography, MenuItem, FormControl, Select } from "@material-ui/core";
+import { IconButton, Menu, Typography, MenuItem, FormControl, Select, TextField } from "@material-ui/core";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -7,6 +7,11 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import TuneIcon from "@material-ui/icons/Tune";
 
 const useStyles = makeStyles((theme) => ({
+    menu: {
+        "& ul": {
+            padding: 0
+        }
+    },
     menuList: {
         minWidth: 450,
         display: "flex",
@@ -19,12 +24,24 @@ const useStyles = makeStyles((theme) => ({
     menuSection: {
         padding: theme.spacing(2),
         flex: 1,
+        [theme.breakpoints.down("sm")]: {
+            padding: theme.spacing(1)
+        }
     },
     closeIcon: {
         position: "absolute",
         top: 5,
         right: 5,
     },
+    gutterBottom: {
+        marginBottom: 25
+    },
+    resultsTitle: {
+        fontSize: 15
+    },
+    spacing: {
+        flexGrow: 1
+    }
 }));
 
 const CustomMenu = withStyles({
@@ -51,7 +68,7 @@ const Filter = (props) => {
     const [anchorElement, setAnchorElement] = useState(null);
     const styles = useStyles();
 
-    const { orderChanged, durationChanged, qualityChanged } = props;
+    const { orderChanged, durationChanged, qualityChanged, maxResultsChanged } = props;
 
     const filterOpenHandler = (event) => {
         setAnchorElement(event.currentTarget);
@@ -72,6 +89,7 @@ const Filter = (props) => {
                 keepMounted
                 open={Boolean(anchorElement)}
                 onClose={filterCloseHandler}
+                className={styles.menu}
             >
                 <div className={styles.menuList}>
                     <FormControl className={styles.menuSection}>
@@ -82,6 +100,7 @@ const Filter = (props) => {
                             value={props.order}
                             onChange={(e) => orderChanged(e.target.value)}
                             color="primary"
+                            className={styles.gutterBottom}
                         >
                             <MenuItem value="date">Date</MenuItem>
                             <MenuItem value="rating">Rating</MenuItem>
@@ -89,6 +108,20 @@ const Filter = (props) => {
                             <MenuItem value="title">Title</MenuItem>
                             <MenuItem value="views">Views</MenuItem>
                         </Select>
+                        <Typography variant="h6" gutterBottom className={styles.resultsTitle}>
+                            Results per page
+                        </Typography>
+                        <TextField
+                            color="primary"
+                            type="number"
+                            inputProps={{
+                                min: 5,
+                                max: 25
+                            }}
+                            value={props.maxResults}
+                            size="small"
+                            onChange={(e) => maxResultsChanged(e.target.value)}
+                        />
                     </FormControl>
                     <FormControl className={styles.menuSection}>
                         <Typography variant="h6" gutterBottom>
