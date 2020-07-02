@@ -8,7 +8,8 @@ import { NavLink } from "react-router-dom";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
-import * as action from "../../store/actions/actionCreators/auth";
+import * as authActions from "../../store/actions/actionCreators/auth";
+import * as videoActions from "../../store/actions/actionCreators/videos";
 
 // http saveData request
 import axios from "axios";
@@ -60,9 +61,9 @@ const useStyles = makeStyles((theme) => ({
     }),
     toolBarPadding: {
         [theme.breakpoints.down("sm")]: {
-            padding: "0 8px"
-        }
-    }
+            padding: "0 8px",
+        },
+    },
 }));
 
 const Header = (props) => {
@@ -81,10 +82,12 @@ const Header = (props) => {
     const userEmail = userInfo.userEmail;
 
     const dispatch = useDispatch();
-    const onLogOut = () => dispatch(action.logOut());
+    const onLogOut = () => dispatch(authActions.logOut());
+    const onCollectionsClear = () => dispatch(videoActions.collectionsClear());
 
     const logOutHandler = () => {
         onLogOut();
+        onCollectionsClear();
     };
 
     const openSnackBar = () => setSnackBarVisible(true);
@@ -95,10 +98,8 @@ const Header = (props) => {
     };
 
     const saveDataHandler = () => {
-        axios.put(`${databaseUrl}/users.json?auth=${userInfo.token}`, {
-                [userInfo.userId]: {
-                    ...videosInfo,
-                },
+        axios.put(`${databaseUrl}/users/${userInfo.userId}.json?auth=${userInfo.token}`, {
+                ...videosInfo,
             })
             .then((response) => {
                 openSnackBar();
@@ -136,7 +137,11 @@ const Header = (props) => {
                 >
                     Logout
                 </Button>
-                <Snackbar visible={snackBarVisible} closed={closeSnackBar} message="Data saved successfully" />
+                <Snackbar
+                    visible={snackBarVisible}
+                    closed={closeSnackBar}
+                    message="Data saved successfully"
+                />
             </Fragment>
         );
     }

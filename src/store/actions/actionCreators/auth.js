@@ -1,4 +1,5 @@
 import * as actions from "../actions";
+import { fetchCollections, collectionsClear } from "./videos";
 import { signUpUrl, signInUrl, userInfoUrl } from "../../../config/authAPI/authAPI";
 import axios from "axios";
 
@@ -51,6 +52,7 @@ export const authenticate = (email, password, isSignedUp) => {
                 localStorage.setItem("userId", userId);
 
                 dispatch(authSuccess(token, userId, email));
+                dispatch(fetchCollections(token, userId));
             })
             .catch((error) => {
                 dispatch(authFail(error.response.data.error.message));
@@ -65,6 +67,7 @@ export const authCheckState = () => {
         const token = localStorage.getItem("token");
         if (!token) {
             dispatch(logOut());
+            dispatch(collectionsClear());
         } else {
             try {
                 const userId = localStorage.getItem("userId");
@@ -75,6 +78,7 @@ export const authCheckState = () => {
                 dispatch(authSuccess(token, userId, email));
             } catch (error) {
                 dispatch(logOut());
+                dispatch(collectionsClear());
             }
         }
     };

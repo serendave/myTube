@@ -10,8 +10,6 @@ const initialState = {
     selectedVideo: null
 };
 
-
-
 const filterCollection = (collection, id) => {
     return Object.keys(collection).reduce((object, videoId) => {
         if (videoId !== id) {
@@ -145,9 +143,11 @@ const reducer = (state = initialState, action) => {
             return addVideoToCollection(state, action.videoId, action.videoTitle, "custom", action.collectionId);
         case actions.VIDEOS_COLLECTION_REMOVE:
             return removeVideoFromCollection(state, action.videoId, "custom", action.collectionId);
+        case actions.VIDEOS_CLEAR_COLLECTIONS:
+            return initialState;
         case actions.VIDEOS_ADD_SELECTED_VIDEO:
             return { ...state, selectedVideo: action.videoTitle }
-        default:
+        default: 
             return state;
     }
 };

@@ -66,16 +66,16 @@ const Mainpage = (props) => {
     const { sideBar, sideBarClosed, sideBarOpenedWidth, smallScreen } = props;
 
     // Redux
-    const userInfo = useSelector((state) => state.auth);
-    const dispatch = useDispatch();
-    const onCollectionsFetch = useCallback(
-        (token, userId) => dispatch(actions.fetchCollections(token, userId)),
-        [dispatch]
-    );
+    // const userInfo = useSelector((state) => state.auth);
+    // const dispatch = useDispatch();
+    // const onCollectionsFetch = useCallback(
+    //     (token, userId) => dispatch(actions.fetchCollections(token, userId)),
+    //     [dispatch]
+    // );
 
-    useEffect(() => {
-        onCollectionsFetch(userInfo.token, userInfo.userId);
-    }, [onCollectionsFetch, userInfo.token, userInfo.userId]);
+    // useEffect(() => {
+    //     onCollectionsFetch(userInfo.token, userInfo.userId);
+    // }, [onCollectionsFetch, userInfo.token, userInfo.userId]);
 
     return (
         <div className={styles.page}>
