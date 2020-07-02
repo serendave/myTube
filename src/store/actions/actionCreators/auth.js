@@ -76,6 +76,7 @@ export const authCheckState = () => {
                 const email = response.data.users[0].email;
 
                 dispatch(authSuccess(token, userId, email));
+                dispatch(fetchCollections(token, userId));
             } catch (error) {
                 dispatch(logOut());
                 dispatch(collectionsClear());

@@ -98,15 +98,17 @@ const Header = (props) => {
     };
 
     const saveDataHandler = () => {
-        axios.put(`${databaseUrl}/users/${userInfo.userId}.json?auth=${userInfo.token}`, {
-                ...videosInfo,
-            })
-            .then((response) => {
-                openSnackBar();
-            })
-            .catch((error) => {
-                setError(error.response.data.error);
-            });
+        if (userInfo.token && userInfo.userId) {
+            axios.put(`${databaseUrl}/users/${userInfo.userId}.json?auth=${userInfo.token}`, {
+                    ...videosInfo,
+                })
+                .then((response) => {
+                    openSnackBar();
+                })
+                .catch((error) => {
+                    setError(error.response.data.error);
+                });
+        }
     };
 
     let buttons = (
