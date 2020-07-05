@@ -67,7 +67,7 @@ const Searchbar = React.memo((props) => {
             </div>
             <Divider className={styles.divider} orientation="vertical" />
             <div className={styles.box}>
-                <IconButton onClick={props.searchClicked}>
+                <IconButton onClick={() => props.searchClicked()}>
                     <SearchIcon />
                 </IconButton>
             </div>

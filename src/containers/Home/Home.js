@@ -82,6 +82,14 @@ const Home = (props) => {
         }
     }, [currentPage, prevPage]);
 
+    useEffect(() => {
+        console.log('Hey');
+        console.log(prevPageToken);
+        console.log(nextPageToken);
+        setPrevPageToken(null);
+        setNextPageToken(null);
+    }, [filters, nextPageToken, prevPageToken]);
+
     const startSearchHandler = () => {
         setVideosLoading(true);
         setVideos([]);
@@ -114,7 +122,7 @@ const Home = (props) => {
             maxResults: filters.maxResults,
         };
 
-        if (currentPageToken) {
+        if (currentPageToken !== null && currentPageToken !== undefined) {
             searchParams.pageToken = currentPageToken;
         }
 

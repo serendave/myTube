@@ -106,7 +106,7 @@ const Filter = (props) => {
                             <MenuItem value="rating">Rating</MenuItem>
                             <MenuItem value="relevance">Relevance</MenuItem>
                             <MenuItem value="title">Title</MenuItem>
-                            <MenuItem value="views">Views</MenuItem>
+                            <MenuItem value="viewCount">Views</MenuItem>
                         </Select>
                         <Typography variant="h6" gutterBottom className={styles.resultsTitle}>
                             Results per page
