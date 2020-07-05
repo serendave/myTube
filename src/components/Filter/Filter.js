@@ -9,13 +9,19 @@ import TuneIcon from "@material-ui/icons/Tune";
 const useStyles = makeStyles((theme) => ({
     menu: {
         "& ul": {
-            padding: 0
-        }
+            padding: 0,
+        },
     },
     menuList: {
-        minWidth: 450,
         display: "flex",
         position: "relative",
+        "@media (max-width: 420px)": {
+            flexDirection: "column",
+            minWidth: 200
+        },
+        "@media (min-width: 420px)": {
+            minWidth: 450,
+        },
         "&:focus": {
             outline: "none",
             border: "none",
@@ -25,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         flex: 1,
         [theme.breakpoints.down("sm")]: {
-            padding: theme.spacing(1)
-        }
+            padding: theme.spacing(1),
+        },
     },
     closeIcon: {
         position: "absolute",
@@ -34,13 +40,13 @@ const useStyles = makeStyles((theme) => ({
         right: 5,
     },
     gutterBottom: {
-        marginBottom: 25
+        marginBottom: 25,
     },
     resultsTitle: {
-        fontSize: 15
+        fontSize: 15,
     },
     spacing: {
-        flexGrow: 1
+        flexGrow: 1,
     }
 }));
 
@@ -116,7 +122,7 @@ const Filter = (props) => {
                             type="number"
                             inputProps={{
                                 min: 5,
-                                max: 25
+                                max: 25,
                             }}
                             value={props.maxResults}
                             size="small"
