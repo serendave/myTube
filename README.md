@@ -1,6 +1,6 @@
 # MyTube App
 
-React Application, that works with YouTube Data API. 
+React Application that works with YouTube Data API. 
 
 
 ## Features
